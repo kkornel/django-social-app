@@ -45,6 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 3rd party
+    'crispy_forms',
+
+    # Local
     'users.apps.UsersConfig',
 ]
 
@@ -182,5 +187,30 @@ STATIC_URL = '/static/'
 
 # I've created custom User in users.models, because I wanted to
 # authenticate users using email address instead of a username.
-
 AUTH_USER_MODEL = 'users.User'
+
+# Telling crispy to use bootstrap v.4 as default
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Tells Django where to go after successful login.
+# If not specified Django looks for /profile/.
+LOGIN_REDIRECT_URL = 'home'
+
+# Tells Django where to go if someone tries to go for a login required view,
+# but he is not logged in. If not specified Django looks for /profile/login.
+LOGIN_URL = 'login'
+
+LOGOUT_REDIRECT_URL = 'login'
+
+# Email configuration for password-reset.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_FROM_EMAIL = 'django@noreply.com'
+
+# Keys for RECAPTCHA.
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')

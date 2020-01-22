@@ -1,0 +1,33 @@
+body {
+  background: #ffffff
+}
+
+a {
+  /* color: #23272b; */
+}
+
+.block-content {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.borders {
+    border-left-color: #2f3336;
+    border-left-style: solid;
+    border-left-width: 1px;
+
+    border-right-color: #2f3336;
+    border-right-style: solid;
+    border-right-width: 1px;
+
+    border-bottom-color: #2f3336;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+
+    border-top-color: #2f3336;
+    border-top-style: solid;
+    border-top-width: 1px;
+}

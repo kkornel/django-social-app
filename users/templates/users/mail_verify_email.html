@@ -1,0 +1,6 @@
+<p>Welcome! Thanks for signing up. Please follow this link to activate your account:</p>
+<p><a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}" target="_blank">
+        http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+    </a>
+</p>
+<p>See you!</p>

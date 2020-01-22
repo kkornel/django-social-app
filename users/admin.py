@@ -12,8 +12,9 @@ from django.contrib.auth.models import Group
 from django.forms.widgets import EmailInput, PasswordInput, TextInput
 from django.utils.safestring import mark_safe
 
-from .models import User, Profile
+from .models import Profile, User
 
+logger = logging.getLogger(__name__)
 UserModel = get_user_model()
 """
 #######################################################
@@ -24,7 +25,7 @@ those forms here in admin.py, instead of forms.py.
 """
 
 
-class CustomAuthForm(AuthenticationForm):
+class CustomAuthenticationForm(AuthenticationForm):
     """
     I don't want to have labels on standrad LoginView such as "Email" or "Password",
     so I've created new CustomForm and changed those for empty strings.

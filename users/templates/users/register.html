@@ -1,0 +1,29 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="col-sm-6 offset-sm-3 mt-3 borders">
+    <form method="POST">
+        <!-- It's adding CSRF token. -->
+        {% csrf_token %}
+
+        <fieldset class="form-group mb-1">
+            <legend class="border-bottom mb-3 pb-1">Join Today!</legend>
+            {{ form|crispy }}
+            <script src='https://www.google.com/recaptcha/api.js'></script>
+            <div class="row align-items-center justify-content-center">
+                <div class="g-recaptcha row" data-theme="dark" data-sitekey="6Lek28EUAAAAAFSZ96oqAVYIAiNxSI4CnGKthuFW">
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group text-center mt-3">
+            <button class="btn btn-dark" type="submit">Sign Up</button>
+        </div>
+    </form>
+    <div class="border-top text-center pt-1 mb-2">
+        <small class="text-muted">
+            Already Have An Account? <a href="{% url 'login' %}">Sign In</a>
+        </small>
+    </div>
+</div>
+{% endblock content %}

@@ -2,9 +2,16 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.files.storage import default_storage as storage
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
+from .tokens import account_activation_token
+from .utils import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +83,7 @@ class User(AbstractBaseUser):
     )
     is_active = models.BooleanField(
         'active',
-        default=True,
+        default=False,
         help_text=('Designates whether this user should be treated as active. '
                    'Unselect this instead of deleting accounts.'),
     )
@@ -110,6 +117,21 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    def send_verification_email(self, request):
+        current_site = get_current_site(request)
+        subject = 'Activate Your Account - Django Social App'
+        uid = urlsafe_base64_encode(force_bytes(self.pk))
+        token = account_activation_token.make_token(self)
+        message = render_to_string(
+            'users/mail_verify_email.html', {
+                'user': self.pk,
+                'domain': current_site.domain,
+                'uid': uid,
+                'token': token,
+            })
+        to_email = self.email
+        send_email(to_email, subject, message)
 
 
 class Profile(models.Model):
