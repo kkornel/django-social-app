@@ -33,12 +33,12 @@ urlpatterns = [
     path('login/',
          auth_views.LoginView.as_view(
              template_name='users/login.html',
-             authentication_form=users_admin.CustomAuthenticationForm),
+             authentication_form=users_admin.CustomAuthenticationForm,
+             redirect_authenticated_user=True),
          name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # My custom way in order to style add reCAPTCHA and validate it.
-    path('password-reset/', users_views.reset_password,
-         name='password_reset'),
+    path('password-reset/', users_views.reset_password, name='password_reset'),
     # Default way, Corey showed this:
     # path('password-reset/',
     #  auth_views.PasswordResetView.as_view(
@@ -49,11 +49,12 @@ urlpatterns = [
              template_name='users/password_reset_done.html'),
          name='password_reset_done'),
     # My custom way in order to style input.
-    path('password-reset-confirm/<uidb64>/<token>/',  # after pressing button on reset password, Django tries to go to this route but it does not exist, so we are creating it here. It also takes 2 parameters. uidb64 and token which ensures that person who is calling it is actually that person.
-         auth_views.PasswordResetConfirmView.as_view(
-             template_name='users/password_reset_confirm.html',
-             form_class=users_forms.CustomSetPasswordForm),
-         name='password_reset_confirm'),
+    path(
+        'password-reset-confirm/<uidb64>/<token>/',  # after pressing button on reset password, Django tries to go to this route but it does not exist, so we are creating it here. It also takes 2 parameters. uidb64 and token which ensures that person who is calling it is actually that person.
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='users/password_reset_confirm.html',
+            form_class=users_forms.CustomSetPasswordForm),
+        name='password_reset_confirm'),
     # Default way, Corey showed this:
     # path('password-reset-confirm/<uidb64>/<token>/',  # after pressing button on reset password, Django tries to go to this route but it does not exist, so we are creating it here. It also takes 2 parameters. uidb64 and token which ensures that person who is calling it is actually that person.
     #      auth_views.PasswordResetConfirmView.as_view(

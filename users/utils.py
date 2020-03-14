@@ -1,6 +1,12 @@
+import logging
+import os
+import uuid
+
 from django.core.mail import send_mail
 
 from djangoapp.settings import EMAIL_FROM_EMAIL
+
+logger = logging.getLogger(__name__)
 
 # def send_reset_password_email(user):
 #     token = user.get_token(3600,
@@ -29,3 +35,11 @@ def send_email(to_email, subject, message):
               EMAIL_FROM_EMAIL, [to_email],
               fail_silently=False,
               html_message=message)
+
+
+def get_file_path_folder(instance, folder_name, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    filepath = os.path.join(folder_name, filename)
+    logger.debug(f'get_file_path_folder: {filepath}')
+    return filepath

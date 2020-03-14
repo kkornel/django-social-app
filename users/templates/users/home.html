@@ -1,6 +1,10 @@
 {% extends "users/base.html" %}
 
 {% block content %}
-<h1>Hello, friend.</h1>
-<h1 class="display-4">{{ user }}</h1>
+
+<br>
+<h3>User:</h3>
+
+<h6 class="display-6">Email: {{ user.email }}</h6>
+<h6 class="display-6">Username: {{ user.username }}</h6>
 {% endblock content %}

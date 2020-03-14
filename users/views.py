@@ -3,13 +3,15 @@ import logging
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
-from .admin import UserCreationForm
-from .decorators import check_recaptcha
+from djangoapp.settings import EMAIL_FROM_EMAIL
+
+from .admin import User, UserCreationForm
+from .decorators import check_recaptcha, prevent_authenticated
 from .forms import CaptchaPasswordResetForm, CustomSetPasswordForm
 from .tokens import account_activation_token
 
@@ -22,15 +24,13 @@ def home(request):
     return render(request, 'users/home.html')
 
 
+@prevent_authenticated
 @check_recaptcha
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid() and request.recaptcha_is_valid:
-            # TODO commit=False wywalic
             user = form.save()
-            # user.is_active = False
-
             user.send_verification_email(request)
             messages.info(
                 request, f'A confirmation email has been sent to {user.email}')
@@ -41,20 +41,11 @@ def register(request):
 
 
 def activate_account(request, uidb64, token):
-    pass
     try:
-        logger.debug(f'uidb64: {uidb64}')
-
         uid = force_text(urlsafe_base64_decode(uidb64))
-        logger.debug(f'uid: {uid}')
-
-        logger.debug(f'token: {token}')
-
         user = User.objects.get(pk=uid)
-        logger.debug(f'user: {user}')
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-
     # if user is not None and account_activation_token.check_token(user, token):
     if user and account_activation_token.check_token(user, token):
         user.is_active = True
@@ -86,13 +77,11 @@ def reset_password(request):
             #           domain_override="aaaa",
             #           use_https=True,
             #           subject_template_name='users/mail_password_reset_subject.txt')
-
             form.save(
-                request=request)
-
-            # ? I think it is not nessccary.
-            # user = form.save()
-            # update_session_auth_hash(request, user)
+                request=request,
+                from_email=EMAIL_FROM_EMAIL,
+                html_email_template_name='users/mail_password_reset.html',
+                subject_template_name='users/mail_password_reset_subject.txt')
             return redirect('password_reset_done')
     else:
         form = CaptchaPasswordResetForm()

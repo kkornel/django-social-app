@@ -202,6 +202,14 @@ LOGIN_URL = 'login'
 
 LOGOUT_REDIRECT_URL = 'login'
 
+# Path where we want to store uploaded files (locally).
+# For a performance reasons, they are stored on the file system, not in database.
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Public URL of MEDIA_ROOT directory.
+# This is how we will access media through the browser.
+MEDIA_URL = '/media/'
+
 # Email configuration for password-reset.
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

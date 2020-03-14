@@ -9,9 +9,10 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from PIL import Image
 
 from .tokens import account_activation_token
-from .utils import send_email
+from .utils import send_email, get_file_path_folder
 
 logger = logging.getLogger(__name__)
 
@@ -71,10 +72,8 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-
     username = models.CharField(max_length=20, unique=True)
     last_login = models.DateTimeField('last login', blank=True, null=True)
-
     is_admin = models.BooleanField(
         'admin status',
         default=False,

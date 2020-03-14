@@ -13,9 +13,6 @@ from django.forms.widgets import EmailInput, PasswordInput, TextInput
 from django.utils.safestring import mark_safe
 
 from .models import Profile, User
-
-logger = logging.getLogger(__name__)
-UserModel = get_user_model()
 """
 #######################################################
 Note:
@@ -24,12 +21,16 @@ those forms here in admin.py, instead of forms.py.
 #######################################################
 """
 
+logger = logging.getLogger(__name__)
+
+UserModel = get_user_model()
+
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
     I don't want to have labels on standrad LoginView such as "Email" or "Password",
     so I've created new CustomForm and changed those for empty strings.
-    The clean() method overrided, because I didn't like the standard error output.
+    The clean() method is overrided, because I didn't like the standard error output.
     The error was above the fields, I've changed it to be under instead.
     """
     username = forms.CharField(label='',
@@ -88,7 +89,7 @@ class UserCreationForm(forms.ModelForm):
         error_messages={
             'unique':
             mark_safe(
-                "Email already in use.  <a href=\"/login/\">Forgot Password?</a>"
+                "Email already in use.  <a href=\"/password-reset/\">Forgot Password?</a>"
             )
         })
     username = forms.CharField(
@@ -133,7 +134,6 @@ class UserCreationForm(forms.ModelForm):
         logger.debug(
             "Save form (should never run, because I'm saving using user.save()) ? After email confirmation it should run i think "
         )
-
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
