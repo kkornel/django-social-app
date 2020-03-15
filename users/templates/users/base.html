@@ -10,18 +10,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <link rel="shortcut icon" href="{% static 'icons/favicon.png' %}" />
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}">
+
     <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
 
-
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}">
-
-    <link rel="shortcut icon" href="{% static 'icons/favicon.png' %}" />
-
     {% block stylesheets %}
-
     {% endblock stylesheets %}
-
 
     <title>
         {% block title_block %}
@@ -33,7 +29,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Django App</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Django App</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -48,10 +44,9 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
+                        <a class="nav-link" href="{% url 'profile' user.username %}">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -78,10 +73,8 @@
         {% endfor %}
         {% endif %}
 
-
-        <div class="row">
-            <!-- ANCHOR Borders  -->
-            <!-- <div class="col-md-2  my-sidebar brd-sidebar"> -->
+        <div class='row content-center'>
+            {% comment %}
             <div class="col-md-2  my-sidebar">
                 <div class="content-section">
                     <h3>Our Sidebar</h3>
@@ -95,12 +88,20 @@
                     </p>
                 </div>
             </div>
+            {% endcomment %}
+
+            {% block content_center %}
+            {% endblock content_center %}
+        </div>
+
+        <div class="row">
+            <!-- ANCHOR Borders  -->
+            <!-- <div class="col-md-2  my-sidebar brd-sidebar"> -->
 
             {% block content %}
             {% endblock content %}
         </div>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -117,7 +118,6 @@
     <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 
     {% block scripts %}
-
     {% endblock scripts %}
 </body>
 

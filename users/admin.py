@@ -111,9 +111,6 @@ class UserCreationForm(forms.ModelForm):
         fields = ('email', 'username')
 
     def clean_password2(self):
-        logger.debug('Clean password running...')
-        logger.debug('### Uncomment later!')
-
         # TODO: uncomment later. In order to validate passwords!
         # Check that the two password entries match
         password1 = self.cleaned_data.get("password1")
@@ -121,21 +118,20 @@ class UserCreationForm(forms.ModelForm):
         try:
             password_validation.validate_password(password2, self.instance)
         except forms.ValidationError as error:
-            # ! The one below should stay commented, because it is default one from Django.
-            # self.add_error('password1', error)
-            self.add_error(
-                'password1',
-                'Password must contain at least 8 characters (letters and numbers required).'
-            )
+            # ! It is default one from Django.
+            # Longer, all details about password.
+            self.add_error('password1', error)
+            # Shorter, my custom.
+            # self.add_error(
+            # 'password1',
+            # 'Password must contain at least 8 characters (letters and numbers required).'
+            # )
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords do not match.")
 
         return password2
 
     def save(self, commit=True):
-        logger.debug(
-            "Save form (should never run, because I'm saving using user.save()) ? After email confirmation it should run i think "
-        )
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])

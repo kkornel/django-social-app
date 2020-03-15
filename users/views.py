@@ -17,19 +17,14 @@ from django.views.generic import ListView, UpdateView
 
 from djangoapp.settings import EMAIL_FROM_EMAIL
 from social.models import Post, Profile
+from users import forms as user_forms
 
 from .admin import User, UserCreationForm
 from .decorators import (check_recaptcha, confirm_password,
                          prevent_authenticated)
-from .forms import (CaptchaPasswordResetForm, CustomChangePasswordForm,
-                    CustomSetPasswordForm, PasswordConfirmForm,
-                    ProfileUpdateViewModal, UserDeleteForm,
-                    UserUpdateFormModal)
 from .tokens import account_activation_token
 
 logger = logging.getLogger(__name__)
-
-# Create your views here.
 
 
 def home(request):
@@ -58,7 +53,6 @@ def activate_account(request, uidb64, token):
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    # if user is not None and account_activation_token.check_token(user, token):
     if user and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
@@ -72,21 +66,19 @@ def activate_account(request, uidb64, token):
                        'Activation link is invalid!',
                        extra_tags='danger')
         return redirect('login')
-        # TODO: might change it later
-        # return HttpResponse('Activation link is invalid!')
 
 
 @check_recaptcha
 def reset_password(request):
     if request.method == 'POST':
-        form = CaptchaPasswordResetForm(request.POST)
+        form = user_forms.CaptchaPasswordResetForm(request.POST)
         if form.is_valid() and request.recaptcha_is_valid:
             # * Different parameters:
             # form.save(from_email='blabla@blabla.com',
             #           email_template_name='',
             #           html_email_template_name='users/mail_password_reset.html',
             #           request=request,
-            #           domain_override="aaaa",
+            #           domain_override='aaaa',
             #           use_https=True,
             #           subject_template_name='users/mail_password_reset_subject.txt')
             form.save(
@@ -96,12 +88,12 @@ def reset_password(request):
                 subject_template_name='users/mail_password_reset_subject.txt')
             return redirect('password_reset_done')
     else:
-        form = CaptchaPasswordResetForm()
+        form = user_forms.CaptchaPasswordResetForm()
     return render(request, 'users/password_reset.html', {'form': form})
 
 
 class PasswordConfirmView(UpdateView):
-    form_class = PasswordConfirmForm
+    form_class = user_forms.PasswordConfirmForm
     template_name = 'users/password_confirm.html'
 
     def get_object(self):
@@ -115,58 +107,49 @@ class PasswordConfirmView(UpdateView):
 @check_recaptcha
 def password_change(request):
     if request.method == 'POST':
-        form = CustomChangePasswordForm(data=request.POST, user=request.user)
+        form = user_forms.CustomChangePasswordForm(data=request.POST,
+                                                   user=request.user)
         if form.is_valid() and request.recaptcha_is_valid:
             form.save()
             update_session_auth_hash(request, form.user)
             messages.success(request, 'Password changed.')
             return redirect('profile', username=request.user.username)
     else:
-        form = CustomChangePasswordForm(user=request.user)
+        form = user_forms.CustomChangePasswordForm(user=request.user)
     return render(request, 'users/password_change.html', {'form': form})
 
 
 def is_user_owner_of_the_account(user, request):
-    logger.debug(user)
-    logger.debug(request.user)
     test = user == request.user
-    logger.debug(test)
     return test
 
 
 def delete_user(request, user):
-    # user.delete()
-    messages.success(request, "Your account has been deleted")
-    # return render(request, 'users/login.html', {})
-    logger.debug('ll')
+    user.delete()
+    messages.success(request, 'Your account has been deleted.')
+    logger.debug('Account has been deleted.')
+    return render(request, 'users/login.html', {})
 
 
 @login_required
 @confirm_password
 def delete_account(request, username):
-    form = UserDeleteForm
-
+    form = user_forms.UserDeleteForm
     try:
         user = User.objects.get(username=username)
         user_passes_test = is_user_owner_of_the_account(user, request)
-
         if not user_passes_test:
             return HttpResponseForbidden()
-
     except User.DoesNotExist:
-        messages.error(request, "User does not exist")
+        messages.error(request, 'User does not exist.')
         return redirect('profile', username=request.user.username)
     except Exception as e:
         messages.error(request, e.message)
         return redirect('profile', username=request.user.username)
 
     if request.method == 'POST':
-        logger.debug('POST')
         delete_user(request, user)
-        # return render(request, 'users/login.html', {})
         return redirect('login')
-    else:
-        logger.debug('GET')
 
     return render(request, 'users/account_delete_confirm.html', {
         'form': form,
@@ -202,7 +185,7 @@ class ProfileDetailListView(ListView):
 class UserUpdateViewModal(BSModalUpdateView):
     model = User
     template_name = 'users/profile_edit_modal.html'
-    form_class = UserUpdateFormModal
+    form_class = user_forms.UserUpdateFormModal
     # success_message = 'Email successfully changed.'
     success_message = ''
 
@@ -215,7 +198,7 @@ class UserUpdateViewModal(BSModalUpdateView):
 class ProfileUpdateViewModal(BSModalUpdateView):
     model = Profile
     template_name = 'users/profile_edit_modal.html'
-    form_class = ProfileUpdateViewModal
+    form_class = user_forms.ProfileUpdateViewModal
     # success_message = 'Profile successfully updated.'
     success_message = ''
 
@@ -238,7 +221,7 @@ class ProfileUpdateViewModal(BSModalUpdateView):
             if current_image.name != 'default.jpg':
                 logger.debug("current_image.name != 'default.jpg'")
                 userprofile.image.delete(save=False)
-                logger.debug("deleted old")
+                logger.debug('deleted old')
                 new = storage.open('default.jpg').read()
                 # logger.debug(new)
                 logger.debug(type(new))
@@ -257,7 +240,7 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 
 # @login_required
 # def edit_userprofile(request):
-#     if request.method == "POST":
+#     if request.method == 'POST':
 #         myuser_form = MyUserUpdateForm(request.POST, instance=request.user)
 #         profile_form = UserProfileUpdateForm(request.POST,
 #                                              request.FILES,
@@ -273,9 +256,9 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 #                 userprofile = request.user.userprofile
 #                 current_image = userprofile.image
 #                 if current_image.name != 'default.jpg':
-#                     logger.debug("current_image.name != 'default.jpg'")
+#                     logger.debug('current_image.name != 'default.jpg'')
 #                     userprofile.image.delete(save=False)
-#                     logger.debug("deleted old")
+#                     logger.debug('deleted old')
 #                     new = storage.open('default.jpg').read()
 #                     logger.debug(new)
 #                     logger.debug(type(new))

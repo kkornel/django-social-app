@@ -25,8 +25,6 @@ logging.getLogger('botocore').setLevel(logging.CRITICAL)
 logging.getLogger('s3transfer').setLevel(logging.CRITICAL)
 logging.getLogger('urllib3').setLevel(logging.CRITICAL)
 
-# Create your models here.
-
 
 def get_file_path(instance, filename):
     folder_name = 'profile_images/'
@@ -34,9 +32,7 @@ def get_file_path(instance, filename):
 
 
 class UserManager(BaseUserManager):
-    """
-    Custom User Manager for Custom User
-    """
+    """Custom User Manager for Custom User"""
     def create_user(self, email, username, password=None):
         logger.debug('UserManager called.')
         if not email:
@@ -66,9 +62,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    """
-    Custom User for authenticating users via email, not username.
-    """
+    """Custom User for authenticating users via email, not username."""
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -144,7 +138,8 @@ class Profile(models.Model):
     image = models.ImageField(default='default.jpg', upload_to=get_file_path)
 
     def save(self, *args, **kwargs):
-        """Resizing images on local storage.
+        """
+        Resizing images on local storage.
         Hardcoded output_size.
         """
         super().save(*args, **kwargs)
@@ -165,7 +160,8 @@ class Profile(models.Model):
 
     # def save(self, *args, **kwargs):
 
-    #     """ Resizing images on S3.
+    #     """
+    #     Resizing images on S3.
     #     Hardcoded output_size.
     #     """
     #     super().save(*args, **kwargs)

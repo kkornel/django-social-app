@@ -32,7 +32,7 @@ def generate_link(link):
 
 
 def generate_hashtag_link(tag):
-    # Free to configuree the URL the way adapted your project
+    # Free to configure the URL the way adapted your project
     url = "/tags/{}/".format(tag)
     return f'<a class="hashtag" href="{url}">#{tag}</a>'
 
