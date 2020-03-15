@@ -116,17 +116,19 @@ class UserCreationForm(forms.ModelForm):
 
         # TODO: uncomment later. In order to validate passwords!
         # Check that the two password entries match
-        # password1 = self.cleaned_data.get("password1")
+        password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
-        # try:
-        #     password_validation.validate_password(password2, self.instance)
-        # except forms.ValidationError as error:
-        #     # ! The one below should stay commented, because it is default one from Django.
-        #     # self.add_error('password1', error)
-        #     self.add_error(
-        #         'password1',  'Password must contain at least 8 characters.')
-        # if password1 and password2 and password1 != password2:
-        #     raise forms.ValidationError("Passwords do not match.")
+        try:
+            password_validation.validate_password(password2, self.instance)
+        except forms.ValidationError as error:
+            # ! The one below should stay commented, because it is default one from Django.
+            # self.add_error('password1', error)
+            self.add_error(
+                'password1',
+                'Password must contain at least 8 characters (letters and numbers required).'
+            )
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords do not match.")
 
         return password2
 

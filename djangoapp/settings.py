@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     # Local
     'users.apps.UsersConfig',
+    'social.apps.SocialConfig',
 ]
 
 MIDDLEWARE = [

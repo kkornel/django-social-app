@@ -1,0 +1,287 @@
+{% extends "users/base.html" %}
+{% load static %}
+
+
+{% comment %}
+TODO Look through all comments in this file
+{% endcomment %}
+
+
+{% comment %}
+{% load filters %}
+{% endcomment %}
+{% load crispy_forms_tags %}
+
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'users/profile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'social/modal.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="col-sm-7 main-column pt-0 pl-0 pr-0">
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="nav-back">
+        <span class="nav-back-span-icon">
+            <!-- <a href="javascript:history.back()" class="nav-back-span-a"> -->
+            <a href="{{ request.META.HTTP_REFERER }}" class="nav-back-span-a">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </span>
+        <span class="nav-back-span-text">
+            {{ profile.user.username }}
+        </span>
+    </div>
+
+    <div class="pl-3 pr-3 mt-2">
+        <div class="media my-media">
+            <img class="profile-img" src="{{ profile.image.url }}">
+            {% if user.profile == profile %}
+            <div>
+                <div class="dropdown my-dropdown">
+                    <a class="link-hover" data-toggle="dropdown">
+                        <i class="fas fa-cog dark-icon"></i>
+                    </a>
+                    <div class="dropdown-menu my-drop-menu">
+                        <span class="my-drop-menu-item-span">
+                            <a class="my-drop-menu-item dropdown-item change-email link-hover">
+
+                                {% comment %}
+
+                                data-id="{% url 'change-email' user.pk %}">
+                                {% endcomment %}
+
+                                Change email
+                            </a>
+                        </span>
+                        <span class="my-drop-menu-item-span">
+                            <a class="my-drop-menu-item dropdown-item ">
+
+                                {% comment %}
+
+                                href="{% url 'password-change' %}">
+                                {% endcomment %}
+
+                                Change password
+                            </a>
+                        </span>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-divider"></div>
+                        <span class="my-drop-menu-item-span">
+                            <a class="my-drop-menu-item dropdown-item ">
+
+                                {% comment %}
+
+                                href="{% url 'delete-account' profile.user.username %}">
+                                {% endcomment %}
+
+                                Delete an account
+                            </a>
+                        </span>
+                    </div>
+                </div>
+                <div class="edit-profile-button">
+                    <a class="edit-profile link-hover btn purple-btn">Edit profile</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="media-body mt-2 mb-2">
+            <div class="row">
+                <div class="col-2">
+                    <h2 class="account-heading"> {{ profile.user.username }}</h2>
+                </div>
+                <div class="col-10 content-center">
+                    <div class="mr-0 ml-0 row content-evenly" style="width: 100%;">
+                        <div>
+                            <a href="#posts" class="no-decoration">
+                                <span class="main-text-bold">19.9K</span>
+                                <span class="secondary-text"><small> posts</small></span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="no-decoration">
+                                <span class="main-text-bold">1,285</span>
+                                <span class="secondary-text"><small> followers</small></span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="no-decoration">
+                                <span class="main-text-bold">43.4K</span>
+                                <span class="secondary-text"><small> following</small></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% comment %}
+            <!-- <p class="mb-1">{{ userprofile.bio|render_tags|urlize }}</p> -->
+
+            <p class="mb-1">{{ profile.bio|render_tags_and_links }}</p>
+            <!-- <p class="mb-1">{{ userprofile.bio|render_links|render_tags }}</p> -->
+            {% endcomment %}
+            <p class="mb-1">{{ profile.bio }}</p>
+
+            <div class="row content-between mr-0 ml-0 mb-0 mt-2">
+                {% if profile.city %}
+                <div class="row secondary-text ml-0 ">
+                    <i class="fas fa-map-marker-alt icon-position"></i>
+                    <a class="no-decoration mb-0" href="https://www.google.pl/maps/place/{{ userprofile.city }}"
+                        target="_blank">
+                        {{ profile.city }}
+                    </a>
+                </div>
+                {% else %}
+                <div></div>
+                <div></div>
+                {% endif %}
+                {% if profile.website %}
+                <div class="row secondary-text ml-0">
+                    <i class="fas fa-link icon-position"></i>
+                    <p class="mb-0">
+
+                        {% comment %}
+                        {{ profile.website|render_links }}
+                        {% endcomment %}
+
+                        {{ profile.website }}
+                    </p>
+                </div>
+                {% else %}
+                <div></div>
+                {% endif %}
+                <!-- <div class="row secondary-text mr-0 ml-0">
+                    <i class="fas fa-calendar-alt icon-position"></i>
+                    <p class="mb-0">Joined {{ profile.user.date_joined|date:"F Y" }}</p>
+                </div> -->
+            </div>
+            <div class="row secondary-text mr-0 ml-0">
+                <i class="fas fa-calendar-alt icon-position"></i>
+                <p class="mb-0">Joined {{ profile.user.date_joined|date:"F Y" }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    <div id="posts"></div>
+    {% for post in posts %}
+    <div onclick="location.href='/post/{{ post.id }}/';" style="cursor: pointer; "
+        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
+        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
+        <article class="media my-post">
+            <a href=" {% url 'profile' post.author.user.username %}">
+                <img class="rounded-circle post-author-img" src="{{ post.author.image.url }}">
+            </a>
+            <div class="media-body">
+                <div class="post-metadata">
+                    <a class="post-author-name" href="{% url 'profile' post.author.user.username %}">
+                        {{ post.author.user.username }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% if post.location %}
+                    <!-- <a class="post-metadata-text mr-2" href="https://www.google.pl/maps/place/{{ post.location }}">
+                        {{ post.location }}
+                    </a> -->
+                    <a class="post-metadata-text" href="" target="_blank"
+                        onclick="openInNewTab(event, 'https:\/\/www.google.pl/maps/place/{{ post.location }}');">
+                        {{ post.location }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% endif %}
+
+                    <span class="post-metadata-text">
+                        {{ post.date_posted }}
+
+                        {% comment %}
+                        {{ post.date_posted|time_since_date_posted }}
+
+                        {% endcomment %}
+                    </span>
+
+                    {% if user.profile == post.author %}
+                    <span class="dropdown" style="float: right;">
+                        <a class="link-hover" data-toggle="dropdown">
+                            <i class="fa fa-chevron-down dark-icon" aria-hidden="true"></i>
+                        </a>
+                        <div class="dropdown-menu my-drop-menu">
+                            <a class="dropdown-item my-drop-menu-item" href="{% url 'post-update' post.pk %}">Edit</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="my-drop-menu-item dropdown-item edit-post link-hover"
+                                    data-id="{% url 'post-update-modal' post.pk %}">
+                                    Edit Modal
+                                </a>
+                            </span>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item my-drop-menu-item" href="{% url 'post-delete' post.pk %}">Delete</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="dropdown-item delete-post link-hover my-drop-menu-item"
+                                    data-id="{% url 'post-delete-modal' post.pk %}">
+                                    Delete Modal
+                                </a>
+                            </span>
+                        </div>
+                    </span>
+                    {% endif %}
+                </div>
+
+                <p class="article-content post-content">
+                    {{ post.content }}
+                    {% comment %}
+                    {{ post.content|render_tags_and_links }}
+
+
+                    {% endcomment %}
+                </p>
+
+                {% if post.image %}
+                <img class="post-image" src="{{ post.image.url }}">
+                {% endif %}
+
+                <div class="post-likes-panel">
+                    <div class="align-right">
+                        <div class="row">
+                            <div>
+
+                                {% comment %}
+                                {% has_user_commented user.pk post.pk as has_commented %}
+                                {% endcomment %}
+
+                                <a id="post-comment-{{post.id}}" href="{% url 'post-detail' post.pk %}#id_text"
+                                    class="col-sec mr-2 {% if has_commented %}commented{% else %}comment{% endif %}"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-wobble-horizontal');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-wobble-horizontal');">
+                                    <i class="far fa-comment hvr-icon"></i>
+                                    <small>{{ post.comments.all.count }}</small>
+                                </a>
+                            </div>
+                            <div>
+                                <a id="post-like-{{post.id}}" href="javascript:void(0);"
+                                    class="{% if user.userprofile in post.likes.all %}liked{% else %}heart{% endif %}"
+                                    onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
+                                    <i class="far fa-heart hvr-icon"></i>
+                                    <small id="post-likes-count">{{ post.likes.all.count }}</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    {% empty %}
+    <div class="content-center" style="margin-top: 32px;">
+        <p>User has no posts.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

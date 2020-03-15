@@ -11,8 +11,10 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from PIL import Image
 
+from djangoapp.utils import get_file_path_folder
+
 from .tokens import account_activation_token
-from .utils import send_email, get_file_path_folder
+from .utils import send_email
 
 logger = logging.getLogger(__name__)
 

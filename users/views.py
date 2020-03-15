@@ -3,12 +3,14 @@ import logging
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import ListView, UpdateView
 
 from djangoapp.settings import EMAIL_FROM_EMAIL
+from social.models import Post, Profile
 
 from .admin import User, UserCreationForm
 from .decorators import check_recaptcha, prevent_authenticated
@@ -86,3 +88,28 @@ def reset_password(request):
     else:
         form = CaptchaPasswordResetForm()
     return render(request, 'users/password_reset.html', {'form': form})
+
+
+class ProfileDetailListView(ListView):
+    """https://stackoverflow.com/questions/41287431/django-combine-detailview-and-listview"""
+    detail_context_object_name = 'profile'
+    model = Post
+    template_name = 'users/profile.html'
+    context_object_name = 'posts'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(ProfileDetailListView, self).get(request, *args, **kwargs)
+
+    def get_object(self):
+        username = self.kwargs.get('username')
+        user = User.objects.get(username=username)
+        return get_object_or_404(Profile, user=user)
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.object).order_by('-date_posted')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileDetailListView, self).get_context_data(**kwargs)
+        context[self.detail_context_object_name] = self.object
+        return context

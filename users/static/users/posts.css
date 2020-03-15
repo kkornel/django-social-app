@@ -1,0 +1,181 @@
+.my-post {
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+}
+
+.post-author-img {
+  height: 64px;
+  width: 64px;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.post-metadata {
+  margin-bottom: 2px;
+  font-size: 15px;
+}
+
+.post-author-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #d9d9d9;
+}
+
+a.post-author-name:hover {
+  color: #ffffff;
+}
+
+.author-name-sm {
+  font-size: 15px;
+  font-weight: 700;
+  color: #d9d9d9;
+}
+
+a.author-name-sm:hover {
+color: #ffffff;
+}
+
+.post-metadata-text {
+  font-weight: 400;
+  color: #6e767d;
+}
+
+a.post-metadata-text:hover {
+  font-weight: 400;
+  color: #767e85;
+}
+
+.dimmed-metadata-text {
+  font-weight: 400;
+  color: #6e767d;
+}
+
+a.dimmed-metadata-text:hover {
+  font-size: 15px;
+  font-weight: 400;
+  color: #767e85;
+}
+
+.post-content {
+  font-weight: 400;
+  color: #d9d9d9;
+}
+
+.normal-text-content {
+  font-weight: 400;
+  color: #d9d9d9;
+}
+
+.post-image {
+  height: 555px;
+  width: 100%;
+
+  border-color: #2f3336;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 14px;
+}
+
+.post-likes-panel {
+  margin-top: 3px;
+  margin-right: 16px;
+}
+
+a.post-stats:hover {
+  color: #a8a7a7;
+}
+
+.heart {
+  font-size: 16px; 
+  color:#6e767d;
+  animation-fill-mode: forwards;  
+  /* For heart-pulse */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+a.heart:hover {
+  color: rgb(255, 0, 0);
+  text-shadow: none;
+	-webkit-transition: 50ms linear 0s;
+	-moz-transition: 50ms linear 0s;
+	-o-transition: 50ms linear 0s;
+	transition: 50ms linear 0s;
+  outline: 0 none;
+  text-decoration: none;
+  text-shadow: 0 0 5px #ff0000;
+}
+
+.liked {
+  font-size: 16px; 
+  color:rgb(255, 0, 0);
+  animation-fill-mode: forwards;  
+  /* For heart-pulse */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+a.liked:hover {
+  color:#6e767d;
+  text-shadow: none;
+	-webkit-transition: 50ms linear 0s;
+	-moz-transition: 50ms linear 0s;
+	-o-transition: 50ms linear 0s;
+	transition: 50ms linear 0s;
+  outline: 0 none;
+  text-decoration: none;
+  text-shadow: 0 0 5px #000000;
+}
+
+.comment {
+  font-size: 16px; 
+  color: #6e767d;
+    /* For heart-pulse */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+a.comment:hover {
+  color: #239eea;
+  text-shadow: none;
+	-webkit-transition: 50ms linear 0s;
+	-moz-transition: 50ms linear 0s;
+	-o-transition: 50ms linear 0s;
+	transition: 50ms linear 0s;
+  outline: 0 none;
+  text-decoration: none;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+.commented {
+  font-size: 16px; 
+  color: #239eea;
+  animation-fill-mode: forwards;  
+  /* For heart-pulse */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+a.commented:hover {
+  color: #68c5ff;
+  text-shadow: none;
+  text-decoration: none;
+}
+
+.comment-author-img {
+  height: 54px;
+  width: 54px;
+
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.delete-comment {
+  margin: 5px 10px 0px 0px;
+}
+
+.delete-comment:hover {
+  cursor: pointer;
+}

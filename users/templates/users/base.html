@@ -11,6 +11,17 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" href="{% static 'users/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}">
+
+    <link rel="shortcut icon" href="{% static 'icons/favicon.png' %}" />
+
+    {% block stylesheets %}
+
+    {% endblock stylesheets %}
+
 
     <title>
         {% block title_block %}
@@ -68,9 +79,26 @@
         {% endif %}
 
 
-        {% block content %}
+        <div class="row">
+            <!-- ANCHOR Borders  -->
+            <!-- <div class="col-md-2  my-sidebar brd-sidebar"> -->
+            <div class="col-md-2  my-sidebar">
+                <div class="content-section">
+                    <h3>Our Sidebar</h3>
+                    <p class='text-muted'>You can put any information here you'd like.
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-light">Latest Posts</li>
+                            <li class="list-group-item list-group-item-light">Announcements</li>
+                            <li class="list-group-item list-group-item-light">Calendars</li>
+                            <li class="list-group-item list-group-item-light">etc</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
 
-        {% endblock content %}
+            {% block content %}
+            {% endblock content %}
+        </div>
     </div>
 
     <!-- Optional JavaScript -->
