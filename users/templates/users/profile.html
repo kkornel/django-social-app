@@ -15,10 +15,48 @@ TODO Look through all comments in this file
 
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'users/profile.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'social/modal.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'users/modal.css' %}">
 {% endblock stylesheets %}
 
+{% block scripts %}
+<script src="{% static 'users/scripts.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $(".edit-profile").modalForm({
+            formURL: "{% url 'edit-profile' user.pk %}"
+        });
+
+        $(".change-email").modalForm({
+            formURL: "{% url 'change-email' user.pk %}"
+        });
+    });
+
+    $(function () {
+        $(".edit-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+
+        $(".delete-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+    });
+</script>
+{% endblock scripts %}
+
 {% block content %}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content my-modal-content">
+
+        </div>
+    </div>
+</div>
+
+
 <div class="col-sm-7 main-column pt-0 pl-0 pr-0">
 
     {% if messages %}

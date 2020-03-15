@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 
     # 3rd party
     'crispy_forms',
-
+    'bootstrap_modal_forms',
+    'widget_tweaks',
     # Local
     'users.apps.UsersConfig',
     'social.apps.SocialConfig',

@@ -1,5 +1,6 @@
 import logging
 
+from bootstrap_modal_forms.generic import BSModalUpdateView
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -14,7 +15,8 @@ from social.models import Post, Profile
 
 from .admin import User, UserCreationForm
 from .decorators import check_recaptcha, prevent_authenticated
-from .forms import CaptchaPasswordResetForm, CustomSetPasswordForm
+from .forms import (CaptchaPasswordResetForm, CustomSetPasswordForm,
+                    ProfileUpdateViewModal, UserUpdateFormModal)
 from .tokens import account_activation_token
 
 logger = logging.getLogger(__name__)
@@ -113,3 +115,29 @@ class ProfileDetailListView(ListView):
         context = super(ProfileDetailListView, self).get_context_data(**kwargs)
         context[self.detail_context_object_name] = self.object
         return context
+
+
+class UserUpdateViewModal(BSModalUpdateView):
+    model = User
+    template_name = 'users/profile_edit_modal.html'
+    form_class = UserUpdateFormModal
+    # success_message = 'Email successfully changed.'
+    success_message = ''
+
+    # success_url = '/profile'
+
+    def get_success_url(self):
+        return self.request.META.get('HTTP_REFERER')
+
+
+class ProfileUpdateViewModal(BSModalUpdateView):
+    model = Profile
+    template_name = 'users/profile_edit_modal.html'
+    form_class = ProfileUpdateViewModal
+    # success_message = 'Profile successfully updated.'
+    success_message = ''
+
+    # success_url = '/profile'
+
+    def get_success_url(self):
+        return self.request.META.get('HTTP_REFERER')

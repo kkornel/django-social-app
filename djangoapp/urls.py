@@ -67,4 +67,17 @@ urlpatterns = [
     path('<str:username>/',
          users_views.ProfileDetailListView.as_view(),
          name='profile'),
+
+    # Modals
+    path('edit-profile/<int:pk>/change-email/',
+         users_views.UserUpdateViewModal.as_view(),
+         name='change-email'),
+    path('edit-profile/<int:pk>/',
+         users_views.ProfileUpdateViewModal.as_view(),
+         name='edit-profile'),
 ]
+
+# https://docs.djangoproject.com/en/2.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
