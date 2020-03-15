@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.files import File
+from django.core.files.storage import default_storage as storage
 from django.core.mail import send_mail
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -221,3 +223,79 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
+
+    def form_valid(self, form):
+        # TODO Still no idea how to replace with default.
+        logger.debug('form_valid')
+        delete_current_image = form.cleaned_data['delete_current_image']
+        image = form.cleaned_data['image']
+        logger.debug(image)
+        logger.debug(type(image))
+        logger.debug(delete_current_image)
+        if delete_current_image:
+            userprofile = self.request.user.userprofile
+            current_image = userprofile.image
+            if current_image.name != 'default.jpg':
+                logger.debug("current_image.name != 'default.jpg'")
+                userprofile.image.delete(save=False)
+                logger.debug("deleted old")
+                new = storage.open('default.jpg').read()
+                # logger.debug(new)
+                logger.debug(type(new))
+                filee = File(new)
+                # logger.debug(filee)
+                logger.debug(type(filee))
+                userprofile.image.save('default.jpg', filee)
+                logger.debug('lil')
+        return super().form_valid(form)
+
+
+# Used this to have two forms in one view.
+# Firstly I had a templte using this view,
+# but I went with modals, so not using it currently.
+# Leaving for future.
+
+# @login_required
+# def edit_userprofile(request):
+#     if request.method == "POST":
+#         myuser_form = MyUserUpdateForm(request.POST, instance=request.user)
+#         profile_form = UserProfileUpdateForm(request.POST,
+#                                              request.FILES,
+#                                              instance=request.user.userprofile)
+
+#         if myuser_form.is_valid() and profile_form.is_valid():
+#             # TODO delete img.
+#             # TODO update with solution from CBS from above
+#             delete_current_image = profile_form.cleaned_data[
+#                 'delete_current_image']
+#             logger.debug(delete_current_image)
+#             if delete_current_image:
+#                 userprofile = request.user.userprofile
+#                 current_image = userprofile.image
+#                 if current_image.name != 'default.jpg':
+#                     logger.debug("current_image.name != 'default.jpg'")
+#                     userprofile.image.delete(save=False)
+#                     logger.debug("deleted old")
+#                     new = storage.open('default.jpg').read()
+#                     logger.debug(new)
+#                     logger.debug(type(new))
+#                     filee = File(new)
+#                     logger.debug(filee)
+#                     logger.debug(type(filee))
+#                     # userprofile.image.save('default.jpg', filee)
+#                     logger.debug('lil')
+#             myuser_form.save()
+#             profile_form.save()
+#             messages.success(request, f'Your account has been updated!')
+#             return redirect('profile')
+
+#     else:
+#         myuser_form = MyUserUpdateForm(instance=request.user)
+#         profile_form = UserProfileUpdateForm(instance=request.user.userprofile)
+
+#     context = {
+#         'myuser_form': myuser_form,
+#         'profile_form': profile_form,
+#     }
+
+#     return render(request, 'users/profile_edit_modal.html', context)
