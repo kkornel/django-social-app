@@ -138,6 +138,9 @@ class User(AbstractBaseUser):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE)
+    bio = models.CharField(max_length=300, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    website = models.CharField(max_length=40, blank=True)
     image = models.ImageField(default='default.jpg', upload_to=get_file_path)
 
     def save(self, *args, **kwargs):

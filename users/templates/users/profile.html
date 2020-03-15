@@ -7,9 +7,7 @@ TODO Look through all comments in this file
 {% endcomment %}
 
 
-{% comment %}
 {% load filters %}
-{% endcomment %}
 {% load crispy_forms_tags %}
 
 
@@ -90,37 +88,21 @@ TODO Look through all comments in this file
                     </a>
                     <div class="dropdown-menu my-drop-menu">
                         <span class="my-drop-menu-item-span">
-                            <a class="my-drop-menu-item dropdown-item change-email link-hover">
-
-                                {% comment %}
-
+                            <a class="my-drop-menu-item dropdown-item change-email link-hover"
                                 data-id="{% url 'change-email' user.pk %}">
-                                {% endcomment %}
-
                                 Change email
                             </a>
                         </span>
                         <span class="my-drop-menu-item-span">
-                            <a class="my-drop-menu-item dropdown-item ">
-
-                                {% comment %}
-
-                                href="{% url 'password-change' %}">
-                                {% endcomment %}
-
+                            <a class="my-drop-menu-item dropdown-item " href="{% url 'password-change' %}">
                                 Change password
                             </a>
                         </span>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-divider"></div>
                         <span class="my-drop-menu-item-span">
-                            <a class="my-drop-menu-item dropdown-item ">
-
-                                {% comment %}
-
+                            <a class="my-drop-menu-item dropdown-item "
                                 href="{% url 'delete-account' profile.user.username %}">
-                                {% endcomment %}
-
                                 Delete an account
                             </a>
                         </span>
@@ -160,19 +142,16 @@ TODO Look through all comments in this file
                     </div>
                 </div>
             </div>
-            {% comment %}
             <!-- <p class="mb-1">{{ userprofile.bio|render_tags|urlize }}</p> -->
 
             <p class="mb-1">{{ profile.bio|render_tags_and_links }}</p>
             <!-- <p class="mb-1">{{ userprofile.bio|render_links|render_tags }}</p> -->
-            {% endcomment %}
-            <p class="mb-1">{{ profile.bio }}</p>
 
             <div class="row content-between mr-0 ml-0 mb-0 mt-2">
                 {% if profile.city %}
                 <div class="row secondary-text ml-0 ">
                     <i class="fas fa-map-marker-alt icon-position"></i>
-                    <a class="no-decoration mb-0" href="https://www.google.pl/maps/place/{{ userprofile.city }}"
+                    <a class="no-decoration mb-0" href="https://www.google.pl/maps/place/{{ profile.city }}"
                         target="_blank">
                         {{ profile.city }}
                     </a>
@@ -185,26 +164,21 @@ TODO Look through all comments in this file
                 <div class="row secondary-text ml-0">
                     <i class="fas fa-link icon-position"></i>
                     <p class="mb-0">
-
-                        {% comment %}
                         {{ profile.website|render_links }}
-                        {% endcomment %}
-
-                        {{ profile.website }}
                     </p>
                 </div>
                 {% else %}
                 <div></div>
                 {% endif %}
-                <!-- <div class="row secondary-text mr-0 ml-0">
+                <div class="row secondary-text mr-0 ml-0">
                     <i class="fas fa-calendar-alt icon-position"></i>
                     <p class="mb-0">Joined {{ profile.user.date_joined|date:"F Y" }}</p>
-                </div> -->
+                </div>
             </div>
-            <div class="row secondary-text mr-0 ml-0">
+            <!-- <div class="row secondary-text mr-0 ml-0">
                 <i class="fas fa-calendar-alt icon-position"></i>
                 <p class="mb-0">Joined {{ profile.user.date_joined|date:"F Y" }}</p>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="my-horizontal-bar"></div>
@@ -235,12 +209,7 @@ TODO Look through all comments in this file
                     {% endif %}
 
                     <span class="post-metadata-text">
-                        {{ post.date_posted }}
-
-                        {% comment %}
                         {{ post.date_posted|time_since_date_posted }}
-
-                        {% endcomment %}
                     </span>
 
                     {% if user.profile == post.author %}
@@ -270,12 +239,7 @@ TODO Look through all comments in this file
                 </div>
 
                 <p class="article-content post-content">
-                    {{ post.content }}
-                    {% comment %}
                     {{ post.content|render_tags_and_links }}
-
-
-                    {% endcomment %}
                 </p>
 
                 {% if post.image %}
@@ -286,10 +250,7 @@ TODO Look through all comments in this file
                     <div class="align-right">
                         <div class="row">
                             <div>
-
-                                {% comment %}
                                 {% has_user_commented user.pk post.pk as has_commented %}
-                                {% endcomment %}
 
                                 <a id="post-comment-{{post.id}}" href="{% url 'post-detail' post.pk %}#id_text"
                                     class="col-sec mr-2 {% if has_commented %}commented{% else %}comment{% endif %}"

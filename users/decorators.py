@@ -1,3 +1,4 @@
+import datetime
 import logging
 from functools import wraps
 
@@ -5,6 +6,7 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +46,21 @@ def check_recaptcha(view_func):
                 messages.error(request,
                                'Invalid reCAPTCHA. Please try again.',
                                extra_tags='danger')
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
+
+def confirm_password(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        logger.debug('ssssssssssssssssssss')
+        last_login = request.user.last_login
+        timespan = last_login + datetime.timedelta(seconds=10)
+        if timezone.now() > timespan:
+            # if True:
+            from .views import PasswordConfirmView
+            return PasswordConfirmView.as_view()(request, *args, **kwargs)
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
