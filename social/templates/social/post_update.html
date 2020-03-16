@@ -1,0 +1,31 @@
+{% extends 'users/base.html' %}
+
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block content_center %}
+<div class="col-md-7 main-column">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="mb-0">
+            <legend class="border-bottom mb-2">Edit post</legend>
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% render_field field class="form-control" %}
+                <div class="{% if field.errors %} invalid{% endif %}">
+                    {% for error in field.errors %}
+                    <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </fieldset>
+        <div class="form-group align-right">
+            <!-- <a class="btn btn-outline-secondary mr-2" href="{% url 'post-detail' post.id %}">Cancel</a> -->
+            <a class="btn btn-outline-secondary mr-2" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+            <button class="btn purple-btn-outline" type="submit">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock content_center %}

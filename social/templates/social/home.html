@@ -1,0 +1,116 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load filters  %}
+
+
+{% block scripts %}
+
+{% endblock scripts %}
+
+
+{% block content_center %}
+<!-- <div class="col-md-7 offset-sm-1 main-column pr-0 pl-0"> -->
+<div class="col-md-7 main-column pr-0 pl-0">
+    <!-- <div class="my-horizontal-bar"></div> -->
+    {% for post in posts %}
+    <div onclick="location.href='/post/{{ post.id }}/';" style="cursor: pointer; "
+        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
+        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
+        <article class="media my-post">
+            <a href=" {% url 'profile' post.author.user.username %}">
+                <img class="rounded-circle post-author-img" src="{{ post.author.image.url }}">
+            </a>
+            <div class="media-body">
+                <div class="post-metadata">
+                    <a class="post-author-name" href="{% url 'profile' post.author.user.username %}">
+                        {{ post.author.user.username }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% if post.location %}
+                    <!-- <a class="post-metadata-text mr-2" href="https://www.google.pl/maps/place/{{ post.location }}"
+                        target="_blank">
+                        {{ post.location }}
+                    </a> -->
+                    <a class="post-metadata-text" href="" target="_blank"
+                        onclick="openInNewTab(event, 'https:\/\/www.google.pl/maps/place/{{ post.location }}');">
+                        {{ post.location }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% endif %}
+
+                    <span class="post-metadata-text">
+                        {{ post.date_posted|time_since_date_posted }}
+                    </span>
+
+                    {% if user.profile == post.author %}
+
+                    <div class="dropdown" style="float: right;">
+                        <a class="link-hover dropdown-arrow" data-toggle="dropdown" id="post{{post.pk}}"
+                            onclick="stopPropagationForGivenPost(event, this.id);">
+                            <i class="fa fa-chevron-down dark-icon" aria-hidden="true"></i>
+                        </a>
+                        <div class="dropdown-menu my-drop-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item my-drop-menu-item" href="{% url 'post-update' post.pk %}">Edit</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="my-drop-menu-item dropdown-item edit-post link-hover"
+                                    onclick="stopPropagation(event);" data-id="{% url 'post-update-modal' post.pk %}">
+                                    Edit Modal
+                                </a>
+                            </span>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item my-drop-menu-item" href="{% url 'post-delete' post.pk %}">Delete</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="dropdown-item delete-post link-hover my-drop-menu-item"
+                                    onclick="stopPropagation(event);" data-id="{% url 'post-delete-modal' post.pk %}">
+                                    Delete Modal
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    {% endif %}
+                </div>
+
+                <p class="article-content post-content">
+                    {{ post.content|render_tags_and_links }}
+                </p>
+
+                {% if post.image %}
+                <img class="post-image" src="{{ post.image.url }}">
+                {% endif %}
+
+                <div class="post-likes-panel">
+                    <div class="align-right">
+                        <div class="row">
+                            <div>
+                                {% has_user_commented user.pk post.pk as has_commented %}
+                                <a id="post-comment-{{post.id}}" href="{% url 'post-detail' post.pk %}#id_text"
+                                    class="col-sec mr-2 {% if has_commented %}commented{% else %}comment{% endif %}"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-wobble-horizontal');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-wobble-horizontal');">
+                                    <i class="far fa-comment hvr-icon"></i>
+                                    <small>{{ post.comments.all.count }}</small>
+                                </a>
+                            </div>
+                            <div>
+                                <a id="post-like-{{post.id}}" href="javascript:void(0);"
+                                    class="{% if user.userprofile in post.likes.all %}liked{% else %}heart{% endif %}"
+                                    onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
+                                    <i class="far fa-heart hvr-icon"></i>
+                                    <small id="post-likes-count">{{ post.likes.all.count }}</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    {% endfor %}
+</div>
+{% endblock content_center %}

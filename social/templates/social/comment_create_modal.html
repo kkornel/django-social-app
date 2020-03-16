@@ -1,0 +1,25 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title">Comment this post</h5>
+        <a class="delete-comment link-hover" data-dismiss="modal">
+            <i class="fas fa-times light-icon "></i>
+        </a>
+    </div>
+
+    <div class="modal-body">
+        {% for field in form %}
+        <div class="mb-0 form-group{% if field.errors %} invalid{% endif %}">
+            {{ field }}
+            {% for error in field.errors %}
+            <p class="help-block">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn purple-btn-outline-modal">Replay</button>
+    </div>
+</form>

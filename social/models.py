@@ -76,66 +76,82 @@ class Post(models.Model):
     #     img_read.close()
 
     # def save(self, *args, **kwargs):
-        """ Resizing images on S3.
-        Hardcoded output_size.
-        """
-        # super().save(*args, **kwargs)
+    # """ Resizing images on S3.
+    # Hardcoded output_size.
+    # """
+    # super().save(*args, **kwargs)
 
-        # if not self.image:
-        #     return
+    # if not self.image:
+    #     return
 
-        # img_read = storage.open(self.image.name, 'r')
-        # img = Image.open(img_read)
+    # img_read = storage.open(self.image.name, 'r')
+    # img = Image.open(img_read)
 
-        # if img.height > 300 or img.width > 300:
-        #     extension = os.path.splitext(self.image.name)[1].lower()
+    # if img.height > 300 or img.width > 300:
+    #     extension = os.path.splitext(self.image.name)[1].lower()
 
-        #     if extension in ['.jpeg', '.jpg']:
-        #         format = 'JPEG'
-        #     if extension in ['.png']:
-        #         format = 'PNG'
+    #     if extension in ['.jpeg', '.jpg']:
+    #         format = 'JPEG'
+    #     if extension in ['.png']:
+    #         format = 'PNG'
 
-        #     output_size = (300, 300)
-        #     img.thumbnail(output_size)
-        #     in_mem_file = io.BytesIO()
-        #     img.save(in_mem_file, format=format)
-        #     img_write = storage.open(self.image.name, 'w+')
-        #     img_write.write(in_mem_file.getvalue())
-        #     img_write.close()
+    #     output_size = (300, 300)
+    #     img.thumbnail(output_size)
+    #     in_mem_file = io.BytesIO()
+    #     img.save(in_mem_file, format=format)
+    #     img_write = storage.open(self.image.name, 'w+')
+    #     img_write.write(in_mem_file.getvalue())
+    #     img_write.close()
 
-        # img_read.close()
+    # img_read.close()
 
-        # def save(self, *args, **kwargs):
-        """ Resizing images on S3.
-        Using AWS example - divides size by 2.
-        """
-        # super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    # """ Resizing images on S3.
+    # Using AWS example - divides size by 2.
+    # """
+    # super().save(*args, **kwargs)
 
-        # if not self.image:
-        #     return
+    # if not self.image:
+    #     return
 
-        # img_read = storage.open(self.image.name, 'r')
-        # img = Image.open(img_read)
+    # img_read = storage.open(self.image.name, 'r')
+    # img = Image.open(img_read)
 
-        # if img.height > 300 or img.width > 300:
-        #     extension = os.path.splitext(self.image.name)[1].lower()
+    # if img.height > 300 or img.width > 300:
+    #     extension = os.path.splitext(self.image.name)[1].lower()
 
-        #     if extension in ['.jpeg', '.jpg']:
-        #         format = 'JPEG'
-        #     if extension in ['.png']:
-        #         format = 'PNG'
+    #     if extension in ['.jpeg', '.jpg']:
+    #         format = 'JPEG'
+    #     if extension in ['.png']:
+    #         format = 'PNG'
 
-        #     img.thumbnail(tuple(x / 2 for x in img.size))
-        #     in_mem_file = io.BytesIO()
-        #     img.save(in_mem_file, format='JPEG')
-        #     img_write = storage.open(self.image.name, 'w+')
-        #     img_write.write(in_mem_file.getvalue())
-        #     img_write.close()
+    #     img.thumbnail(tuple(x / 2 for x in img.size))
+    #     in_mem_file = io.BytesIO()
+    #     img.save(in_mem_file, format='JPEG')
+    #     img_write = storage.open(self.image.name, 'w+')
+    #     img_write.write(in_mem_file.getvalue())
+    #     img_write.close()
 
-        # img_read.close()
+    # img_read.close()
 
     def __str__(self):
         return f'Post#{self.id} by {self.author.user.username}#{self.author.user.id} -> {self.content[:10]}... '
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post,
+                             on_delete=models.CASCADE,
+                             related_name='comments')
+    author = models.ForeignKey(Profile,
+                               on_delete=models.CASCADE,
+                               related_name='comments')
+    text = models.TextField(max_length=280)
+    date_commented = models.DateTimeField(default=timezone.now)
+
+    # date_commented = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Comment#{self.id} for Post#{self.post.id} by {self.author.user.username}#{self.author.user.id}  -> Content {self.text[:10]}... '

@@ -25,7 +25,7 @@ from users import views as users_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', users_views.home, name='home'),
+    path('', include('social.urls')),
     path('register/', users_views.register, name='register'),
     path('activate/<uidb64>/<token>/',
          users_views.activate_account,

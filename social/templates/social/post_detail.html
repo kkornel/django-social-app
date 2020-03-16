@@ -1,0 +1,219 @@
+{% extends 'users/base.html' %}
+
+{% load static %}
+{% load filters %}
+{% load crispy_forms_tags %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'social/post-detail.css' %}">
+{% endblock stylesheets %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $(".create-comment").modalForm({
+            formURL: "{% url 'comment-create-modal' post.pk %}"
+        });
+
+        $(".delete-post").modalForm({
+            formURL: "{% url 'post-delete-modal' post.pk %}"
+        });
+
+        $(".edit-post").modalForm({
+            formURL: "{% url 'post-update-modal' post.pk %}"
+        });
+    });
+    $(function () {
+        $(".delete-comment").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+    });
+</script>
+{% endblock scripts %}
+
+
+{% block content_center %}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content my-modal-content">
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-7 main-column pr-0 pl-0">
+    <!-- ANCHOR Borders  -->
+    <div class="nav-back">
+        <span class="nav-back-span-icon">
+            <a href="javascript:history.back()" class="nav-back-span-a">
+                <!-- <a href="{{ request.META.HTTP_REFERER }}" class="nav-back-span-a"> -->
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </span>
+        <span class="nav-back-span-text">
+            Post
+        </span>
+    </div>
+    <!-- <div class="my-post brd-post"> -->
+    <div class="my-post">
+        <article class="media">
+            <span class="author-img-sm-span">
+                <a href=" {% url 'profile' post.author.user.username %}">
+                    <img class="rounded-circle author-img-sm" src="{{ post.author.image.url }}">
+                </a>
+            </span>
+
+            <div class="media-body">
+                <a class="author-name-bg" href="{% url 'profile' post.author.user.username %}">
+                    {{ post.author.user.username }}
+                </a>
+
+                {% if post.location %}
+                <div>
+                    <small class="post-metadata-text">
+                        <i class="fa fa-globe-americas" aria-hidden="true"></i>
+                        <!-- <i class="fas fa-map-signs"></i> -->
+                        <!-- <i class="fa fa-location-arrow" aria-hidden="true"></i> -->
+                        <!-- <i class="fa fa-map" aria-hidden="true"></i> -->
+                        <!-- <i class="fa fa-map-marker" aria-hidden="true"></i> -->
+                    </small>
+                    <a class="post-metadata-text" target="_blank"
+                        href="https://www.google.pl/maps/place/{{ post.location }}">
+                        <small>
+                            {{ post.location }}
+                        </small>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if user.profile == post.author %}
+            <div class="dropdown">
+                <a class="link-hover" data-toggle="dropdown">
+                    <i class="fa fa-chevron-down dark-icon" aria-hidden="true"></i>
+                </a>
+                <div class="dropdown-menu my-drop-menu">
+                    <a class="dropdown-item my-drop-menu-item" href="{% url 'post-update' post.pk %}">Edit</a>
+                    <span class="my-drop-menu-item-span">
+                        <a class="my-drop-menu-item dropdown-item edit-post link-hover"
+                            data-id="{% url 'post-update-modal' post.pk %}">
+                            Edit Modal
+                        </a>
+                    </span>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item my-drop-menu-item" href="{% url 'post-delete' post.pk %}">Delete</a>
+                    <span class="my-drop-menu-item-span">
+                        <a class="dropdown-item delete-post link-hover my-drop-menu-item"
+                            data-id="{% url 'post-delete-modal' post.pk %}">
+                            Delete Modal
+                        </a>
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+        </article>
+        <article class="media">
+            <div class="media-body">
+                <p class="article-content post-detail-content">
+                    {{ post.content|render_tags_and_links }}
+                </p>
+                {% if post.image %}
+                <!-- TODO Fix all sizes of imgs -->
+                <img class="post-detail-image" src="{{ post.image.url }}">
+                {% endif %}
+
+                <div class="post-metadata-text post-metadata-date">
+                    {{ post.date_posted|date:"g:i A · M d, Y" }}
+                </div>
+                <div class="my-horizontal-bar post-metadata-date"></div>
+                <div class="justify-div">
+                    <div>
+                        {% has_user_commented user.pk post.pk as has_commented %}
+                        <a id="post-comment-{{post.id}}" href="{% url 'post-detail' post.pk %}#id_text"
+                            class="col-sec mr-2 post-detail-likes-panel {% if has_commented %}commented{% else %}comment{% endif %}"
+                            onmouseover="$('#' + this.id).addClass('hvr-icon-wobble-horizontal');"
+                            onmouseout="$('#' + this.id).removeClass('hvr-icon-wobble-horizontal');">
+                            <i class="far fa-comment hvr-icon"></i>
+                            <small>{{ post.comments.all.count }}</small>
+                        </a>
+                    </div>
+                    <div>
+                        <a id="post-like-{{post.id}}" href="javascript:void(0);"
+                            class="post-detail-likes-panel {% if user.userprofile in post.likes.all %}liked{% else %}heart{% endif %}"
+                            onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
+                            onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
+                            onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
+                            <i class="far fa-heart hvr-icon"></i>
+                            <small id="post-likes-count">{{ post.likes.all.count }}</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    <div id="comments">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group mb-0">
+                <legend class="border-bottom mb-2">Comments</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="align-right">
+                <div class="form-group mr-2  mb-2" style="display: inline-block;">
+                    <a class="create-comment link-hover btn purple-btn">Replay modal</a>
+                </div>
+                <div class="form-group mb-2" style="display: inline-block;">
+                    <button class="btn purple-btn" type="submit">Replay</button>
+                </div>
+            </div>
+        </form>
+        <div class="my-horizontal-bar mb-2"></div>
+        {% for comment in post.comments.all|dictsortreversed:"date_commented" %}
+        <div class="post-detail-comment">
+            <article class="media">
+                <span class="comment-author-img-sm-span">
+                    <a href="{% url 'profile' comment.author.user.username %}">
+                        <img class="rounded-circle author-img-sm" src="{{ comment.author.image.url }}">
+                    </a>
+                </span>
+                <div class="media-body">
+                    <div>
+                        <a class="author-name-sm mr-1" href="{% url 'profile' post.author.user.username %}">
+                            {{ comment.author.user.username }}
+                        </a>
+                        <span class="dimmed-metadata-text">
+                            &raquo;
+                        </span>
+                        <span class="dimmed-metadata-text ml-1">
+                            <small>
+                                {{ comment.date_commented|time_since_date_posted }}
+                            </small>
+                        </span>
+
+                        {% if user.profile == post.author or user.profile == comment.author %}
+                        <div class="float-right">
+                            <a class="delete-comment link-hover" data-id="{% url 'comment-delete-modal' comment.pk %}">
+                                <i class="fas fa-times dark-icon "></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="comment-content">
+                        <p class="article-content normal-text-content">
+                            {{ comment.text|render_tags_and_links }}
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="content-center" style="margin-top: 32px;">
+            <p>No comments yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content_center %}

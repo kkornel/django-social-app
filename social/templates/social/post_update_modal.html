@@ -1,0 +1,43 @@
+{% load widget_tweaks %}
+
+<form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h3 class="modal-title">Edit your post</h3>
+        <a class="delete-comment link-hover" data-dismiss="modal">
+            <i class="fas fa-times light-icon "></i>
+        </a>
+    </div>
+
+    <div class="modal-body">
+        <div class="{% if form.non_field_errors %}invalid{% endif %}">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+        </div>
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% render_field field class="form-control" %}
+            <div class="{% if field.errors %} invalid{% endif %}">
+                {% for error in field.errors %}
+                <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+
+        {% comment %}
+
+
+        <!-- <a class="btn btn-outline-secondary mr-2" href="{% url 'post-detail' post.id %}">Cancel</a> -->
+        <!-- <a class="btn btn-outline-secondary mr-2" href="{{ request.META.HTTP_REFERER }}">Cancel</a> -->
+        {% endcomment %}
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+        <button class="btn purple-btn-outline-modal" type="submit">Update</button>
+    </div>
+</form>

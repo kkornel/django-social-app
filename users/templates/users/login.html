@@ -1,11 +1,11 @@
 {% extends "users/base.html" %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
 <div class="col-sm-6 offset-sm-3 mt-3 borders">
     <form method="POST">
         {% csrf_token %}
-
         <fieldset class="form-group mb-1">
             <legend class="border-bottom mb-3 pb-1">Log In</legend>
             {{ form|crispy }}

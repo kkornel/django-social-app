@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    return render(request, 'users/home.html')
+    return render(request, 'social/home.html')
 
 
 @prevent_authenticated
