@@ -29,6 +29,22 @@ function openInNewTab(event, url) {
     event.stopImmediatePropagation();
 }
 
+$('.dropdown-arrow').click(function (event) {
+    // It solves problem of not opening the dropdown at first click.
+    event.stopPropagation();
+});
+
+function stopPropagationForGivenPost(event, postId) {
+    // It's used to show dropdown without trigerring 
+    // onlick of whole post.
+    $('#' + postId).dropdown();
+    event.stopPropagation();
+}
+
+function stopPropagation(event) {
+    event.stopPropagation();
+}
+
 // function stopImmediatePropagation(event) {
 //     event.stopImmediatePropagation();
 // }

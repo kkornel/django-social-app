@@ -23,6 +23,10 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     location = models.CharField(max_length=40, blank=True)
     image = models.ImageField(upload_to=get_file_path, blank=True)
+    likes = models.ManyToManyField(Profile,
+                                   blank=True,
+                                   through='Like',
+                                   related_name='likes')
 
     def save(self, *args, **kwargs):
         """
@@ -61,3 +65,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment#{self.id} for Post#{self.post.id} by {self.author.user.username}#{self.author.user.id}  -> Content {self.text[:10]}... '
+
+
+class Like(models.Model):
+    author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    date_liked = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Like#{self.id} for Post#{self.post.id} by {self.author.user.username}#{self.author.user.id}  -> Content {self.post.content[:10]}... '

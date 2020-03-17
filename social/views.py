@@ -3,6 +3,7 @@ import logging
 from bootstrap_modal_forms.generic import (BSModalCreateView,
                                            BSModalDeleteView,
                                            BSModalUpdateView)
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render, reverse
@@ -178,3 +179,23 @@ class CommentDeleteViewModal(BSModalDeleteView):
 
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
+
+
+@login_required
+def like_post(request):
+    if request.method == 'POST':
+        postId = request.POST.get('postId')
+        userId = request.POST.get('userId')
+
+        post = Post.objects.get(pk=int(postId))
+        profile = Profile.objects.get(pk=int(userId))
+
+        if profile in post.likes.all():
+            post.likes.remove(profile)
+            # response = f'Like removed by {profile.user.username}#{profile.user.id} for Post#{post.id}. Likes left: {post.likes.count()}'
+        else:
+            post.likes.add(profile)
+            # response = f'Like number {post.likes.count()} added for Post#{post.id} by {profile.user.username}#{profile.user.id}'
+
+    response = post.likes.all().count()
+    return HttpResponse(response)

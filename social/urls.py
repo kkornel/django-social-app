@@ -15,6 +15,9 @@ urlpatterns = [
          social_views.PostDeleteView.as_view(),
          name='post-delete'),
 
+    # AJAX
+    path('like/', social_views.like_post, name='like-post'),
+
     # Modals
     # Posts
     path('new-modal/',

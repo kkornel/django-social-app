@@ -70,10 +70,9 @@ def render_tags_and_links(obj):
 def has_user_commented(userId, postId):
     try:
         user = User.objects.get(pk=userId)
-        userprofile = user.userprofile
+        profile = user.profile
         post = Post.objects.get(pk=postId)
-        has_commented = post.comments.all().filter(
-            author=userprofile).count() > 0
+        has_commented = post.comments.all().filter(author=profile).count() > 0
         return has_commented
     except Exception:
         return False

@@ -216,11 +216,11 @@ class ProfileUpdateViewModal(BSModalUpdateView):
         logger.debug(type(image))
         logger.debug(delete_current_image)
         if delete_current_image:
-            userprofile = self.request.user.userprofile
-            current_image = userprofile.image
+            profile = self.request.user.profile
+            current_image = profile.image
             if current_image.name != 'default.jpg':
                 logger.debug("current_image.name != 'default.jpg'")
-                userprofile.image.delete(save=False)
+                profile.image.delete(save=False)
                 logger.debug('deleted old')
                 new = storage.open('default.jpg').read()
                 # logger.debug(new)
@@ -228,7 +228,7 @@ class ProfileUpdateViewModal(BSModalUpdateView):
                 filee = File(new)
                 # logger.debug(filee)
                 logger.debug(type(filee))
-                userprofile.image.save('default.jpg', filee)
+                profile.image.save('default.jpg', filee)
                 logger.debug('lil')
         return super().form_valid(form)
 
@@ -239,12 +239,12 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 # Leaving for future.
 
 # @login_required
-# def edit_userprofile(request):
+# def edit_profile(request):
 #     if request.method == 'POST':
 #         myuser_form = MyUserUpdateForm(request.POST, instance=request.user)
-#         profile_form = UserProfileUpdateForm(request.POST,
+#         profile_form = ProfileUpdateForm(request.POST,
 #                                              request.FILES,
-#                                              instance=request.user.userprofile)
+#                                              instance=request.user.profile)
 
 #         if myuser_form.is_valid() and profile_form.is_valid():
 #             # TODO delete img.
@@ -253,11 +253,11 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 #                 'delete_current_image']
 #             logger.debug(delete_current_image)
 #             if delete_current_image:
-#                 userprofile = request.user.userprofile
-#                 current_image = userprofile.image
+#                 profile = request.user.profile
+#                 current_image = profile.image
 #                 if current_image.name != 'default.jpg':
 #                     logger.debug('current_image.name != 'default.jpg'')
-#                     userprofile.image.delete(save=False)
+#                     profile.image.delete(save=False)
 #                     logger.debug('deleted old')
 #                     new = storage.open('default.jpg').read()
 #                     logger.debug(new)
@@ -265,7 +265,7 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 #                     filee = File(new)
 #                     logger.debug(filee)
 #                     logger.debug(type(filee))
-#                     # userprofile.image.save('default.jpg', filee)
+#                     # profile.image.save('default.jpg', filee)
 #                     logger.debug('lil')
 #             myuser_form.save()
 #             profile_form.save()
@@ -274,7 +274,7 @@ class ProfileUpdateViewModal(BSModalUpdateView):
 
 #     else:
 #         myuser_form = MyUserUpdateForm(instance=request.user)
-#         profile_form = UserProfileUpdateForm(instance=request.user.userprofile)
+#         profile_form = ProfileUpdateForm(instance=request.user.profile)
 
 #     context = {
 #         'myuser_form': myuser_form,

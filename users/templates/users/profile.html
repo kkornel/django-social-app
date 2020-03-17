@@ -6,7 +6,6 @@
 
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'users/profile.css' %}">
-
 {% endblock stylesheets %}
 
 {% block scripts %}
@@ -38,7 +37,6 @@
 {% endblock scripts %}
 
 {% block content_center %}
-
 {% comment %}
 <!-- <div class="modal fade" tabindex="-1" role="dialog" id="modal">
     <div class="modal-dialog" role="document">
@@ -48,14 +46,6 @@
     </div>
 </div> -->
 {% endcomment %}
-
-<div class="modal fade" tabindex="-1" role="dialog" id="modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content my-modal-content">
-
-        </div>
-    </div>
-</div>
 
 <div class="col-sm-7 main-column pt-0 pl-0 pr-0">
     {% if messages %}
@@ -211,7 +201,8 @@
 
                     {% if user.profile == post.author %}
                     <span class="dropdown" style="float: right;">
-                        <a class="link-hover" data-toggle="dropdown">
+                        <a class="link-hover dropdown-arrow" data-toggle="dropdown" id="post{{post.pk}}"
+                            onclick="stopPropagationForGivenPost(event, this.id);">
                             <i class="fa fa-chevron-down dark-icon" aria-hidden="true"></i>
                         </a>
                         <div class="dropdown-menu my-drop-menu">
@@ -259,7 +250,7 @@
                             </div>
                             <div>
                                 <a id="post-like-{{post.id}}" href="javascript:void(0);"
-                                    class="{% if user.userprofile in post.likes.all %}liked{% else %}heart{% endif %}"
+                                    class="{% if user.profile in post.likes.all %}liked{% else %}heart{% endif %}"
                                     onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
                                     onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
                                     onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">

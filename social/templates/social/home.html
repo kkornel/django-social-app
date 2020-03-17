@@ -99,7 +99,7 @@
                             </div>
                             <div>
                                 <a id="post-like-{{post.id}}" href="javascript:void(0);"
-                                    class="{% if user.userprofile in post.likes.all %}liked{% else %}heart{% endif %}"
+                                    class="{% if user.profile in post.likes.all %}liked{% else %}heart{% endif %}"
                                     onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
                                     onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
                                     onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
