@@ -32,8 +32,15 @@ class PostListView(ListView):
     # paginate_by = 5
 
     def get_queryset(self):
-        logger.debug(self.request.user.profile.followers.all())
-        return Post.objects.filter()
+        posts_to_display = self.request.user.profile.posts.all()
+        logger.debug(posts_to_display.count())
+        following = self.request.user.profile.follows.all()
+        logger.debug(following)
+        for follow in following:
+            logger.debug(follow.posts.all().count())
+            posts_to_display = posts_to_display | follow.posts.all()
+        logger.debug(posts_to_display.count())
+        return posts_to_display.order_by('-date_posted')
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):

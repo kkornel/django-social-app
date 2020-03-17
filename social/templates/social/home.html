@@ -10,6 +10,21 @@
 
 
 {% block scripts %}
+<script>
+    $(function () {
+        $(".edit-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+
+        $(".delete-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+    });
+</script>
 {% endblock scripts %}
 
 {% block content_center %}
