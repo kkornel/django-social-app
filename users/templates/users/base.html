@@ -70,8 +70,6 @@
     </nav>
 
     <div class="container">
-
-
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}" role="alert">
@@ -136,12 +134,10 @@
 
     <script>
         $(document).ready(function () {
-
             $(".create-post").modalForm({
                 formURL: "{% url 'post-create-modal' %}"
             });
         });
-
     </script>
 
     {% block scripts %}
