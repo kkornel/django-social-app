@@ -22,13 +22,18 @@ logger = logging.getLogger(__name__)
 
 
 class PostListView(ListView):
-    model = Post
+    # model = Post
     # If not specified, Django looks for template in following path: '<app>/<model>_<viewtype>.html'
     template_name = 'social/home.html'
     # If not specified, Django uses name 'object' for data passed to template file.
     context_object_name = 'posts'
     ordering = ['-date_posted']
+
     # paginate_by = 5
+
+    def get_queryset(self):
+        logger.debug(self.request.user.profile.followers.all())
+        return Post.objects.filter()
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -198,4 +203,49 @@ def like_post(request):
             # response = f'Like number {post.likes.count()} added for Post#{post.id} by {profile.user.username}#{profile.user.id}'
 
     response = post.likes.all().count()
+    return HttpResponse(response)
+
+
+@login_required
+def follow_user(request):
+    if request.method == 'POST':
+        followerID = request.POST.get('followerID')
+        followingID = request.POST.get('followingID')
+
+        logger.debug(followerID)
+        logger.debug(followingID)
+
+        follower = Profile.objects.get(pk=int(followerID))
+        following = Profile.objects.get(pk=int(followingID))
+
+        logger.debug(follower)
+        logger.debug(following)
+
+        if follower.is_following(following):
+            logger.debug('Already following. Removing follow.')
+            follower.remove_follow(following)
+            logger.debug(follower.get_following())
+            logger.debug(following.get_following())
+            logger.debug(follower.get_followers())
+            logger.debug(following.get_followers())
+
+        else:
+            logger.debug('Adding follow.')
+            follower.add_follow(following)
+            logger.debug(follower.get_following())
+            logger.debug(following.get_following())
+            logger.debug(follower.get_followers())
+            logger.debug(following.get_followers())
+
+    #     if following in follower.followers.all():
+    #         logger.debug('Already following. Removing follow.')
+    #         follower.followers.remove(following)
+    #     else:
+    #         logger.debug('Addig follow.')
+    #         follower.followers.add(following)
+
+    # logger.debug(follower.follows.all())
+    # logger.debug(follower.followers.all())
+    response = follower.followers.all().count()
+    logger.debug(response)
     return HttpResponse(response)

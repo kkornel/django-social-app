@@ -17,6 +17,7 @@ urlpatterns = [
 
     # AJAX
     path('like/', social_views.like_post, name='like-post'),
+    path('follow/', social_views.follow_user, name='follow-user'),
 
     # Modals
     # Posts

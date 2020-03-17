@@ -136,6 +136,10 @@ class Profile(models.Model):
     city = models.CharField(max_length=100, blank=True)
     website = models.CharField(max_length=40, blank=True)
     image = models.ImageField(default='default.jpg', upload_to=get_file_path)
+    follows = models.ManyToManyField('self',
+                                     through='Follow',
+                                     symmetrical=False,
+                                     related_name='followers')
 
     def save(self, *args, **kwargs):
         """
@@ -155,37 +159,32 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
+    def add_follow(self, user):
+        follow, created = Follow.objects.get_or_create(from_user=self,
+                                                       to_user=user)
+        return follow
+
+    def remove_follow(self, user):
+        Follow.objects.filter(from_user=self, to_user=user).delete()
+        return
+
+    def get_following(self):
+        return self.follows.filter(to_users__from_user=self)
+
+    def get_followers(self):
+        return self.followers.filter(from_users__to_user=self)
+
+    def is_following(self, user):
+        return user in self.get_following()
+
     def __str__(self):
         return f'Profile#{self.id} of {self.user.username}#{self.user.id}'
 
-    # def save(self, *args, **kwargs):
 
-    #     """
-    #     Resizing images on S3.
-    #     Hardcoded output_size.
-    #     """
-    #     super().save(*args, **kwargs)
-
-    #     if not self.image:
-    #         return
-
-    #     img_read = storage.open(self.image.name, 'r')
-    #     img = Image.open(img_read)
-
-    #     if img.height > 300 or img.width > 300:
-    #         extension = os.path.splitext(self.image.name)[1].lower()
-
-    #         if extension in ['.jpeg', '.jpg']:
-    #             format = 'JPEG'
-    #         if extension in ['.png']:
-    #             format = 'PNG'
-
-    #         output_size = (300, 300)
-    #         img.thumbnail(output_size)
-    #         in_mem_file = io.BytesIO()
-    #         img.save(in_mem_file, format=format)
-    #         img_write = storage.open(self.image.name, 'w+')
-    #         img_write.write(in_mem_file.getvalue())
-    #         img_write.close()
-
-    #     img_read.close()
+class Follow(models.Model):
+    from_user = models.ForeignKey(Profile,
+                                  on_delete=models.CASCADE,
+                                  related_name='from_users')
+    to_user = models.ForeignKey(Profile,
+                                on_delete=models.CASCADE,
+                                related_name='to_users')

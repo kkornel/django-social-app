@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe  # import function
 
 from social.models import Post
 from users.admin import User
+from users.models import Profile
 """
 https://docs.djangoproject.com/en/2.2/howto/custom-template-tags/
 
@@ -74,6 +75,20 @@ def has_user_commented(userId, postId):
         post = Post.objects.get(pk=postId)
         has_commented = post.comments.all().filter(author=profile).count() > 0
         return has_commented
+    except Exception:
+        return False
+
+
+@register.simple_tag
+def is_already_following(followerID, followingID):
+    logger.debug(f'FILTERS: {followerID} {followingID}')
+
+    try:
+        follower = Profile.objects.get(pk=followerID)
+        following = Profile.objects.get(pk=followingID)
+        is_following = follower.is_following(following)
+        logger.debug(f'FILTERS: {is_following}')
+        return is_following
     except Exception:
         return False
 

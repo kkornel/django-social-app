@@ -10,6 +10,29 @@
 
 {% block scripts %}
 <script>
+    function follow_user(event, followerID, followingID, csrf) {
+        const aHrefFollow = $('#follow-btn');
+        aHrefFollow.toggleClass("purple-btn-outline");
+        aHrefFollow.toggleClass("purple-btn");
+        aHrefFollow.text((aHrefFollow.text() == 'Follow') ? 'Following' : 'Follow');
+        $.ajax({
+            url: '/follow/',
+            type: 'POST',
+            data: {
+                'followerID': followerID,
+                'followingID': followingID,
+                csrfmiddlewaretoken: csrf,
+            },
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            },
+        });
+        event.stopImmediatePropagation();
+    }
+
     $(document).ready(function () {
         $(".edit-profile").modalForm({
             formURL: "{% url 'edit-profile' user.pk %}"
@@ -104,6 +127,35 @@
                 </div>
             </div>
             {% endif %}
+
+            {% if user.is_authenticated and user.profile != profile %}
+            <div>
+                {% is_already_following user.profile.pk profile.pk as is_following %}
+
+
+                {% if is_following %}
+                <a id="follow-btn" class="link-hover btn purple-btn-outline"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', '{{ csrf_token }}');">Following</a>
+                {% else %}
+                <a id="follow-btn" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}','{{ csrf_token }}');">Follow</a>
+                {% endif %}
+                </a>
+
+            </div>
+
+            {% comment %}
+            <a id="post-like-{{post.id}}" href="javascript:void(0);"
+                class="{% if user.profile in post.likes.all %}liked{% else %}heart{% endif %}"
+                onclick="send_like(event, '{{post.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
+                onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
+                onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
+                <i class="far fa-heart hvr-icon"></i>
+                <small id="post-likes-count">{{ post.likes.all.count }}</small>
+            </a>
+            {% endcomment %}
+            {% endif %}
+
         </div>
         <div class="media-body mt-2 mb-2">
             <div class="row">

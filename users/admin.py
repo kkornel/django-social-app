@@ -12,7 +12,7 @@ from django.contrib.auth.models import Group
 from django.forms.widgets import EmailInput, PasswordInput, TextInput
 from django.utils.safestring import mark_safe
 
-from .models import Profile, User
+from .models import Follow, Profile, User
 """
 #######################################################
 Note:
@@ -212,3 +212,4 @@ admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 
 admin.site.register(Profile)
+admin.site.register(Follow)
