@@ -1,0 +1,52 @@
+{% load widget_tweaks %}
+{% load filters %}
+
+<div class="modal-header">
+    <h3 class="modal-title">Followed by:</h3>
+    <a class="delete-comment link-hover" data-dismiss="modal">
+        <i class="fas fa-times light-icon "></i>
+    </a>
+</div>
+
+<div class="modal-body">
+    {% for profile in profiles %}
+    <div class="follower-borders">
+        <article class="media">
+            <span class="follower-img-sm-span">
+                <a href="{% url 'profile' profile.user.username %}">
+                    <img class="rounded-circle follower-img-sm" src="{{ profile.image.url }}">
+                </a>
+            </span>
+            <div class="media-body">
+                <div>
+                    <a class="author-name-sm mr-1" href="{% url 'profile' profile.user.username %}">
+                        {{ profile.user.username }}
+                    </a>
+                </div>
+            </div>
+            <div>
+                {% is_already_following user.profile.pk profile.pk as is_following %}
+
+                {% if user.profile != profile %}
+                {% if is_following %}
+                <a id="follow-btn" class="link-hover btn purple-btn-outline"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', '{{ csrf_token }}');">Following</a>
+                {% else %}
+                <a id="follow-btn" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}','{{ csrf_token }}');">Follow</a>
+                {% endif %}
+                {% endif %}
+                </a>
+            </div>
+        </article>
+    </div>
+    {% empty %}
+    <div class="content-center" style="margin-top: 32px;">
+        <p>No followers.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+</div>

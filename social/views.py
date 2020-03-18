@@ -1,7 +1,8 @@
+import json
 import logging
 
 from bootstrap_modal_forms.generic import (BSModalCreateView,
-                                           BSModalDeleteView,
+                                           BSModalDeleteView, BSModalReadView,
                                            BSModalUpdateView)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -101,6 +102,9 @@ class PostUpdateViewModal(PostUpdateView, BSModalUpdateView):
     form_class = social_forms.PostUpdateFormModal
     template_name = 'social/post_update_modal.html'
     success_message = ''
+
+    def get_success_url(self):
+        return self.request.META.get('HTTP_REFERER')
 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -204,10 +208,8 @@ def like_post(request):
 
         if profile in post.likes.all():
             post.likes.remove(profile)
-            # response = f'Like removed by {profile.user.username}#{profile.user.id} for Post#{post.id}. Likes left: {post.likes.count()}'
         else:
             post.likes.add(profile)
-            # response = f'Like number {post.likes.count()} added for Post#{post.id} by {profile.user.username}#{profile.user.id}'
 
     response = post.likes.all().count()
     return HttpResponse(response)
@@ -244,15 +246,27 @@ def follow_user(request):
             logger.debug(follower.get_followers())
             logger.debug(following.get_followers())
 
-    #     if following in follower.followers.all():
-    #         logger.debug('Already following. Removing follow.')
-    #         follower.followers.remove(following)
-    #     else:
-    #         logger.debug('Addig follow.')
-    #         follower.followers.add(following)
-
-    # logger.debug(follower.follows.all())
-    # logger.debug(follower.followers.all())
-    response = follower.followers.all().count()
+    followers = following.get_followers().count()
+    following = following.get_following().count()
+    response = {"followers": followers, "following": following}
     logger.debug(response)
-    return HttpResponse(response)
+    return HttpResponse(json.dumps(response))
+
+
+class FollowersView(ListView):
+    template_name = 'social/followers.html'
+    context_object_name = 'profiles'
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        user = User.objects.get(username=username)
+        return user.profile.followers.all()
+
+
+class FollowingView(FollowersView):
+    template_name = 'social/following.html'
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        user = User.objects.get(username=username)
+        return user.profile.follows.all()

@@ -37,4 +37,11 @@ urlpatterns = [
     path('post/<int:pk>/comment-delete-modal/',
          social_views.CommentDeleteViewModal.as_view(),
          name='comment-delete-modal'),
+    # Followers
+    path('<str:username>/followers/',
+         social_views.FollowersView.as_view(),
+         name='followers'),
+    path('<str:username>/following/',
+         social_views.FollowingView.as_view(),
+         name='following'),
 ]

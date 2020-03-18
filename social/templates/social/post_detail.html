@@ -14,15 +14,14 @@
         $(".create-comment").modalForm({
             formURL: "{% url 'comment-create-modal' post.pk %}"
         });
-
         $(".delete-post").modalForm({
             formURL: "{% url 'post-delete-modal' post.pk %}"
         });
-
         $(".edit-post").modalForm({
             formURL: "{% url 'post-update-modal' post.pk %}"
         });
     });
+
     $(function () {
         $(".delete-comment").each(function () {
             $(this).modalForm({
@@ -34,17 +33,6 @@
 {% endblock scripts %}
 
 {% block content_center %}
-{% comment %}
-<!-- <div class="modal fade" tabindex="-1" role="dialog" id="modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content my-modal-content">
-
-        </div>
-    </div>
-</div> -->
-{% endcomment %}
-
-
 <div class="col-md-7 main-column pr-0 pl-0">
     <!-- ANCHOR Borders  -->
     <div class="nav-back">

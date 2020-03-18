@@ -45,6 +45,10 @@ function stopPropagation(event) {
     event.stopPropagation();
 }
 
+function stopImmediatePropagation(event) {
+    event.stopImmediatePropagation();
+}
+
 // function stopImmediatePropagation(event) {
 //     event.stopImmediatePropagation();
 // }

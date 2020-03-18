@@ -3,11 +3,9 @@
 {% load static %}
 {% load filters  %}
 
-
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
 {% endblock stylesheets %}
-
 
 {% block scripts %}
 <script>
@@ -62,7 +60,6 @@
                     </span>
 
                     {% if user.profile == post.author %}
-
                     <div class="dropdown" style="float: right;">
                         <a class="link-hover dropdown-arrow" data-toggle="dropdown" id="post{{post.pk}}"
                             onclick="stopPropagationForGivenPost(event, this.id);">
@@ -86,8 +83,6 @@
                             </span>
                         </div>
                     </div>
-
-
                     {% endif %}
                 </div>
 
@@ -125,7 +120,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </article>
     </div>
