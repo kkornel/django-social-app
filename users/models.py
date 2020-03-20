@@ -178,7 +178,7 @@ class Profile(models.Model):
         return user in self.get_following()
 
     def __str__(self):
-        return f'Profile#{self.id} of {self.user.username}#{self.user.id}'
+        return f'Profile#{self.id}.{self.user.username}'
 
 
 class Follow(models.Model):
@@ -188,3 +188,6 @@ class Follow(models.Model):
     to_user = models.ForeignKey(Profile,
                                 on_delete=models.CASCADE,
                                 related_name='to_users')
+
+    def __str__(self):
+        return f'{self.from_user.user.username}->{self.to_user.user.username}'

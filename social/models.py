@@ -46,11 +46,11 @@ class Post(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
-    def __str__(self):
-        return f'Post#{self.id} by {self.author.user.username}#{self.author.user.id} -> {self.content[:10]}... '
-
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return f'Post#{self.id}'
 
 
 class Comment(models.Model):
@@ -64,7 +64,7 @@ class Comment(models.Model):
     date_commented = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'Comment#{self.id} for Post#{self.post.id} by {self.author.user.username}#{self.author.user.id}  -> Content {self.text[:10]}... '
+        return f'Comment#{self.id}.Post#{self.post.id}'
 
 
 class Like(models.Model):
@@ -73,4 +73,4 @@ class Like(models.Model):
     date_liked = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f'Like#{self.id} for Post#{self.post.id} by {self.author.user.username}#{self.author.user.id}  -> Content {self.post.content[:10]}... '
+        return f'Like#{self.id}.Post#{self.post.id}'

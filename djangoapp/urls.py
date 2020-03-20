@@ -84,6 +84,7 @@ urlpatterns = [
 
     # API
     path('api/', include('social.api.urls')),
+    path('api/', include('users.api.urls')),
 ]
 
 # https://docs.djangoproject.com/en/2.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
