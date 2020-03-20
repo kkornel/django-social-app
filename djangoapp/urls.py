@@ -81,6 +81,9 @@ urlpatterns = [
     path('edit-profile/<int:pk>/',
          users_views.ProfileUpdateViewModal.as_view(),
          name='edit-profile'),
+
+    # API
+    path('api/', include('social.api.urls')),
 ]
 
 # https://docs.djangoproject.com/en/2.1/howto/static-files/#serving-files-uploaded-by-a-user-during-development
