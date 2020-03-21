@@ -13,15 +13,15 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_profile(sender, instance, created, **kwargs):
-    logger.debug('Signal received: create_profile')
-    logger.debug(f'created: {created}')
+    # logger.debug('Signal received: create_profile')
+    # logger.debug(f'created: {created}')
     if created:
         Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def save_profile(sender, instance, **kwargs):
-    logger.debug('Signal received: save_profile')
+    # logger.debug('Signal received: save_profile')
     instance.profile.save()
 
 

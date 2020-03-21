@@ -34,13 +34,13 @@ class PostListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         posts_to_display = self.request.user.profile.posts.all()
-        logger.debug(posts_to_display.count())
+        # logger.debug(posts_to_display.count())
         following = self.request.user.profile.follows.all()
-        logger.debug(following)
+        # logger.debug(following)
         for follow in following:
-            logger.debug(follow.posts.all().count())
+            # logger.debug(follow.posts.all().count())
             posts_to_display = posts_to_display | follow.posts.all()
-        logger.debug(posts_to_display.count())
+        # logger.debug(posts_to_display.count())
         return posts_to_display.order_by('-date_posted')
 
 
@@ -221,35 +221,35 @@ def follow_user(request):
         followerID = request.POST.get('followerID')
         followingID = request.POST.get('followingID')
 
-        logger.debug(followerID)
-        logger.debug(followingID)
+        # logger.debug(followerID)
+        # logger.debug(followingID)
 
         follower = Profile.objects.get(pk=int(followerID))
         following = Profile.objects.get(pk=int(followingID))
 
-        logger.debug(follower)
-        logger.debug(following)
+        # logger.debug(follower)
+        # logger.debug(following)
 
         if follower.is_following(following):
-            logger.debug('Already following. Removing follow.')
+            # logger.debug('Already following. Removing follow.')
             follower.remove_follow(following)
-            logger.debug(follower.get_following())
-            logger.debug(following.get_following())
-            logger.debug(follower.get_followers())
-            logger.debug(following.get_followers())
+            # logger.debug(follower.get_following())
+            # logger.debug(following.get_following())
+            # logger.debug(follower.get_followers())
+            # logger.debug(following.get_followers())
 
         else:
-            logger.debug('Adding follow.')
+            # logger.debug('Adding follow.')
             follower.add_follow(following)
-            logger.debug(follower.get_following())
-            logger.debug(following.get_following())
-            logger.debug(follower.get_followers())
-            logger.debug(following.get_followers())
+            # logger.debug(follower.get_following())
+            # logger.debug(following.get_following())
+            # logger.debug(follower.get_followers())
+            # logger.debug(following.get_followers())
 
     followers = following.get_followers().count()
     following = following.get_following().count()
     response = {"followers": followers, "following": following}
-    logger.debug(response)
+    # logger.debug(response)
     return HttpResponse(json.dumps(response))
 
 

@@ -4,6 +4,7 @@ from bootstrap_modal_forms.generic import BSModalUpdateView
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.files import File
 from django.core.files.storage import default_storage as storage
@@ -182,7 +183,7 @@ class ProfileDetailListView(ListView):
         return context
 
 
-class UserUpdateViewModal(BSModalUpdateView):
+class UserUpdateViewModal(UserPassesTestMixin, BSModalUpdateView):
     model = User
     template_name = 'users/profile_edit_modal.html'
     form_class = user_forms.UserUpdateFormModal
@@ -194,8 +195,12 @@ class UserUpdateViewModal(BSModalUpdateView):
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
 
+    def test_func(self):
+        user = self.get_object()
+        return self.request.user == user
 
-class ProfileUpdateViewModal(BSModalUpdateView):
+
+class ProfileUpdateViewModal(UserPassesTestMixin, BSModalUpdateView):
     model = Profile
     template_name = 'users/profile_edit_modal.html'
     form_class = user_forms.ProfileUpdateViewModal
@@ -231,6 +236,15 @@ class ProfileUpdateViewModal(BSModalUpdateView):
                 profile.image.save('default.jpg', filee)
                 logger.debug('lil')
         return super().form_valid(form)
+
+    def test_func(self):
+        """
+        This function is run by UserPassesTestMixin to check something that we want to check.
+        In this case we want to check if the currently logged in user is also the author of the post.
+        If he is not, then he has no permissions to do that.
+        """
+        profile = self.get_object()
+        return self.request.user.profile == profile
 
 
 # Used this to have two forms in one view.
