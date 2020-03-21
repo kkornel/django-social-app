@@ -22,7 +22,7 @@ from .models import Comment, Post
 logger = logging.getLogger(__name__)
 
 
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin, ListView):
     # model = Post
     # If not specified, Django looks for template in following path: '<app>/<model>_<viewtype>.html'
     template_name = 'social/home.html'
@@ -30,7 +30,7 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-date_posted']
 
-    # paginate_by = 5
+    # paginate_by = 10
 
     def get_queryset(self):
         posts_to_display = self.request.user.profile.posts.all()
