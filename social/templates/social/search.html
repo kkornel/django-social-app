@@ -126,7 +126,6 @@
     <div class="my-horizontal-bar"></div>
 
     {% elif result|get_class == 'User' %}
-    {% if user.profile != result.profile %}
     <div onclick="location.href='/{{ result.username }}/';" style="cursor: pointer; "
         onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
@@ -161,7 +160,6 @@
     </div>
     <div class="my-horizontal-bar"></div>
 
-    {% endif %}
     {% endif %}
 
     {% empty %}

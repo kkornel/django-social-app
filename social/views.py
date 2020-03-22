@@ -273,6 +273,7 @@ class FollowingView(FollowersView):
         return user.profile.follows.all()
 
 
+@login_required
 def search(request):
     template = 'social/search.html'
     results = []
