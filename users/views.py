@@ -158,7 +158,7 @@ def delete_account(request, username):
     })
 
 
-class ProfileDetailListView(ListView):
+class ProfileDetailListView(LoginRequiredMixin, ListView):
     """https://stackoverflow.com/questions/41287431/django-combine-detailview-and-listview"""
     detail_context_object_name = 'profile'
     model = Post

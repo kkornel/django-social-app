@@ -177,6 +177,9 @@ class Profile(models.Model):
     def is_following(self, user):
         return user in self.get_following()
 
+    def is_followed_by(self, user):
+        return user in self.get_followers()
+
     def __str__(self):
         return f'Profile#{self.id}.{self.user.username}'
 
