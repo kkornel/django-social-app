@@ -52,3 +52,32 @@ function stopImmediatePropagation(event) {
 // function stopImmediatePropagation(event) {
 //     event.stopImmediatePropagation();
 // }
+
+function follow_user(event, followerID, followingID, csrf) {
+    const aHrefFollow = $('#follow-btn');
+    aHrefFollow.toggleClass("purple-btn-outline");
+    aHrefFollow.toggleClass("purple-btn");
+    aHrefFollow.text((aHrefFollow.text() == 'Follow') ? 'Following' : 'Follow');
+    $.ajax({
+        url: '/follow/',
+        type: 'POST',
+        data: {
+            'followerID': followerID,
+            'followingID': followingID,
+            csrfmiddlewaretoken: csrf,
+        },
+        success: function (data) {
+            console.log(data);
+            data = JSON.parse(data);
+            followers = data["followers"];
+            following = data["following"];
+            console.log(data["following"]);
+            $('#followers-count').text(followers);
+            $('#following-count').text(following);
+        },
+        error: function (data) {
+            console.log(data);
+        },
+    });
+    event.stopImmediatePropagation();
+}

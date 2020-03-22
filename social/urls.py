@@ -14,7 +14,7 @@ urlpatterns = [
     path('post/<int:pk>/delete/',
          social_views.PostDeleteView.as_view(),
          name='post-delete'),
-
+    path('search/', social_views.search, name='search'),
     # AJAX
     path('like/', social_views.like_post, name='like-post'),
     path('follow/', social_views.follow_user, name='follow-user'),

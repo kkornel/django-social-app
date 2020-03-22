@@ -6,6 +6,7 @@ from bootstrap_modal_forms.generic import (BSModalCreateView,
                                            BSModalUpdateView)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views import View, generic
@@ -270,3 +271,19 @@ class FollowingView(FollowersView):
         username = self.kwargs['username']
         user = User.objects.get(username=username)
         return user.profile.follows.all()
+
+
+def search(request):
+    template = 'social/search.html'
+    results = []
+    query = request.GET.get('q')
+    queries = query.split(' ')
+    for q in queries:
+        users = User.objects.filter(Q(username__icontains=q)).distinct()
+        for user in users:
+            results.append(user)
+        posts = Post.objects.filter(
+            Q(content__icontains=q) | Q(location__icontains=q)).distinct()
+        for post in posts:
+            results.append(post)
+    return render(request, template, {'results': list(set(results))})

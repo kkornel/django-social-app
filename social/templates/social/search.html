@@ -1,0 +1,173 @@
+{% extends "users/base.html" %}
+
+{% load static %}
+{% load filters  %}
+{% load widget_tweaks %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'users/profile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'social/followers.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
+{% endblock stylesheets %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        $(".edit-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+
+        $(".delete-post").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data('id')
+            });
+        });
+    });
+</script>
+{% endblock scripts %}
+
+{% block content_center %}
+<div class="col-md-7 main-column pr-0 pl-0">
+    {% for result in results %}
+
+    {% if result|get_class == 'Post' %}
+    <div onclick="location.href='/post/{{ result.id }}/';" style="cursor: pointer; "
+        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
+        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
+        <article class="media my-post">
+            <a href=" {% url 'profile' result.author.user.username %}">
+                <img class="rounded-circle post-author-img" src="{{ result.author.image.url }}">
+            </a>
+            <div class="media-body">
+                <div class="post-metadata">
+                    <a class="post-author-name" href="{% url 'profile' result.author.user.username %}">
+                        {{ result.author.user.username }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% if result.location %}
+                    <a class="post-metadata-text" href="" target="_blank"
+                        onclick="openInNewTab(event, 'https:\/\/www.google.pl/maps/place/{{ result.location }}');">
+                        {{ result.location }}
+                    </a>
+                    <span class="post-metadata-text ml-1 mr-1"> · </span>
+                    {% endif %}
+
+                    <span class="post-metadata-text">
+                        {{ result.date_posted|time_since_date_posted }}
+                    </span>
+
+                    {% if user.profile == result.author %}
+                    <div class="dropdown" style="float: right;">
+                        <a class="link-hover dropdown-arrow" data-toggle="dropdown" id="post{{result.pk}}"
+                            onclick="stopPropagationForGivenPost(event, this.id);">
+                            <i class="fa fa-chevron-down dark-icon" aria-hidden="true"></i>
+                        </a>
+                        <div class="dropdown-menu my-drop-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item my-drop-menu-item" href="{% url 'post-update' result.pk %}">Edit</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="my-drop-menu-item dropdown-item edit-post link-hover"
+                                    onclick="stopPropagation(event);" data-id="{% url 'post-update-modal' result.pk %}">
+                                    Edit Modal
+                                </a>
+                            </span>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item my-drop-menu-item"
+                                href="{% url 'post-delete' result.pk %}">Delete</a>
+                            <span class="my-drop-menu-item-span">
+                                <a class="dropdown-item delete-post link-hover my-drop-menu-item"
+                                    onclick="stopPropagation(event);" data-id="{% url 'post-delete-modal' result.pk %}">
+                                    Delete Modal
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <p class="article-content post-content">
+                    {{ result.content|render_tags_and_links }}
+                </p>
+
+                {% if result.image %}
+                <img class="post-image" src="{{ result.image.url }}">
+                {% endif %}
+
+                <div class="post-likes-panel">
+                    <div class="align-right">
+                        <div class="row">
+                            <div>
+                                {% has_user_commented user.pk result.pk as has_commented %}
+                                <a id="post-comment-{{result.id}}" href="{% url 'post-detail' result.pk %}#id_text"
+                                    class="col-sec mr-2 {% if has_commented %}commented{% else %}comment{% endif %}"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-wobble-horizontal');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-wobble-horizontal');">
+                                    <i class="far fa-comment hvr-icon"></i>
+                                    <small>{{ result.comments.all.count }}</small>
+                                </a>
+                            </div>
+                            <div>
+                                <a id="post-like-{{result.id}}" href="javascript:void(0);"
+                                    class="{% if user.profile in result.likes.all %}liked{% else %}heart{% endif %}"
+                                    onclick="send_like(event, '{{result.pk}}', '{{user.pk}}', this.id, '{{ csrf_token }}');"
+                                    onmouseover="$('#' + this.id).addClass('hvr-icon-pulse-shrink');"
+                                    onmouseout="$('#' + this.id).removeClass('hvr-icon-pulse-shrink');">
+                                    <i class="far fa-heart hvr-icon"></i>
+                                    <small id="post-likes-count">{{ result.likes.all.count }}</small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+
+    {% elif result|get_class == 'User' %}
+    {% if user.profile != result.profile %}
+    <div onclick="location.href='/{{ result.username }}/';" style="cursor: pointer; "
+        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
+        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
+        <article class="media my-post">
+            <a href=" {% url 'profile' result.username %}">
+                <img class="rounded-circle post-author-img" src="{{ result.profile.image.url }}">
+            </a>
+            <div class="media-body">
+                <div class="pt-2">
+                    <h2 class="account-heading">
+                        <a class="follower-author-name" href="{% url 'profile' result.username %}">
+                            {{ result.username }}
+                        </a>
+                    </h2>
+                </div>
+            </div>
+            <div class="pt-3">
+                {% is_already_following user.profile.pk result.profile.pk as is_following %}
+
+                {% if user.profile != result.profile %}
+                {% if is_following %}
+                <a id="follow-btn" class="link-hover btn purple-btn-outline"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}', '{{ csrf_token }}');">Following</a>
+                {% else %}
+                <a id="follow-btn" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}','{{ csrf_token }}');">Follow</a>
+                {% endif %}
+                {% endif %}
+                </a>
+            </div>
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+
+    {% endif %}
+    {% endif %}
+
+    {% empty %}
+    <div class="content-center" style="margin-top: 32px;">
+        <p>No results.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content_center %}

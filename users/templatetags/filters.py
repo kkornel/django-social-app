@@ -93,6 +93,11 @@ def is_already_following(followerID, followingID):
         return False
 
 
+@register.filter(name='get_class')
+def get_class(value):
+    return value.__class__.__name__
+
+
 @register.filter
 def time_since_date_posted(obj):
     if obj is not None:

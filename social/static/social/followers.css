@@ -1,3 +1,13 @@
+.follower-author-name {
+  font-size: 22px;
+  /* font-weight: 700; */
+  color: #d9d9d9;
+}
+
+a.follower-author-name:hover {
+  color: #ffffff;
+}
+
 .follower-img-sm {
     height: 48px;
     width: 48px;
