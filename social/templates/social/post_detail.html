@@ -4,6 +4,10 @@
 {% load filters %}
 {% load crispy_forms_tags %}
 
+{% block title %}
+Post: {{ post.content }}
+{% endblock title %}
+
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'social/post-detail.css' %}">
 {% endblock stylesheets %}
@@ -49,7 +53,11 @@
         <article class="media">
             <span class="author-img-sm-span">
                 <a href=" {% url 'profile' post.author.user.username %}">
+                    {% if post.author.image %}
                     <img class="rounded-circle author-img-sm" src="{{ post.author.image.url }}">
+                    {% else %}
+                    <img class="rounded-circle author-img-sm" src="{% get_media_prefix %}default.jpg">
+                    {% endif %}
                 </a>
             </span>
 
@@ -164,7 +172,11 @@
             <article class="media">
                 <span class="comment-author-img-sm-span">
                     <a href="{% url 'profile' comment.author.user.username %}">
+                        {% if comment.author.image %}
                         <img class="rounded-circle author-img-sm" src="{{ comment.author.image.url }}">
+                        {% else %}
+                        <img class="rounded-circle author-img-sm" src="{% get_media_prefix %}default.jpg">
+                        {% endif %}
                     </a>
                 </span>
                 <div class="media-body">

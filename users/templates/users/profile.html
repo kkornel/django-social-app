@@ -65,7 +65,12 @@
 
     <div class="pl-3 pr-3 mt-2">
         <div class="media my-media">
+            {% if profile.image %}
             <img class="profile-img" src="{{ profile.image.url }}">
+            {% else %}
+            <img class="profile-img" src="{% get_media_prefix %}default.jpg">
+            {% endif %}
+
             {% if user.profile == profile %}
             <div>
                 <div class="dropdown my-dropdown">
@@ -186,7 +191,11 @@
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
         <article class="media my-post">
             <a href=" {% url 'profile' post.author.user.username %}">
+                {% if post.author.image %}
                 <img class="rounded-circle post-author-img" src="{{ post.author.image.url }}">
+                {% else %}
+                <img class="rounded-circle post-author-img" src="{% get_media_prefix %}default.jpg">
+                {% endif %}
             </a>
             <div class="media-body">
                 <div class="post-metadata">
@@ -276,7 +285,7 @@
     <div class="my-horizontal-bar"></div>
     {% empty %}
     <div class="content-center" style="margin-top: 32px; margin-bottom: 32px;">
-        <p>User has no posts.</p>
+        <p class="mb-0">User has no posts.</p>
     </div>
     {% endfor %}
 </div>

@@ -42,7 +42,11 @@
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
         <article class="media my-post">
             <a href=" {% url 'profile' result.username %}">
+                {% if result.profile.image %}
                 <img class="rounded-circle post-author-img" src="{{ result.profile.image.url }}">
+                {% else %}
+                <img class="rounded-circle post-author-img" src="{% get_media_prefix %}default.jpg">
+                {% endif %}
             </a>
             <div class="media-body">
                 <div class="pt-0">
@@ -94,7 +98,11 @@
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
         <article class="media my-post">
             <a href=" {% url 'profile' result.author.user.username %}">
+                {% if result.author.image %}
                 <img class="rounded-circle post-author-img" src="{{ result.author.image.url }}">
+                {% else %}
+                <img class="rounded-circle post-author-img" src="{% get_media_prefix %}default.jpg">
+                {% endif %}
             </a>
             <div class="media-body">
                 <div class="post-metadata">

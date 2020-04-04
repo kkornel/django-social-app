@@ -1,8 +1,10 @@
 import logging
+import os
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.files import File
 from django.core.files.storage import default_storage as storage
 from django.db import models
 from django.template.loader import render_to_string
@@ -27,7 +29,7 @@ logging.getLogger('urllib3').setLevel(logging.CRITICAL)
 
 
 def get_file_path(instance, filename):
-    folder_name = 'profile_images/'
+    folder_name = 'profiles_images/'
     return get_file_path_folder(instance, folder_name, filename)
 
 
@@ -184,6 +186,17 @@ class Profile(models.Model):
 
     def is_followed_by(self, user):
         return user in self.get_followers()
+
+    def delete_image(self):
+        if self.image == 'default.jpg':
+            logger.debug(f'Tried to remove: default.jpg. FAILED.')
+            return
+        if self.image == '':
+            logger.debug(f'No image to delete. FAILED.')
+            return
+        logger.debug(f'Removing: {self.image}...')
+        self.image.delete(save=False)
+        logger.debug(f'Removed.')
 
     def __str__(self):
         return f'Profile#{self.id}.{self.user.username}'

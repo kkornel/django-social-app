@@ -34,7 +34,11 @@
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
         <article class="media my-post">
             <a href=" {% url 'profile' post.author.user.username %}">
+                {% if post.author.image %}
                 <img class="rounded-circle post-author-img" src="{{ post.author.image.url }}">
+                {% else %}
+                <img class="rounded-circle post-author-img" src="{% get_media_prefix %}default.jpg">
+                {% endif %}
             </a>
             <div class="media-body">
                 <div class="post-metadata">
@@ -120,6 +124,10 @@
         </article>
     </div>
     <div class="my-horizontal-bar"></div>
+    {% empty %}
+    <div class="content-center" style="margin-top: 32px; margin-bottom: 32px;">
+        <p class="mb-0">No posts to display.</p>
+    </div>
     {% endfor %}
 </div>
 {% endblock content_center %}

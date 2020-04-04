@@ -1,6 +1,6 @@
 {% extends "users/base.html" %}
 
-{% block content %}
+{% block content_center %}
 <div class="col-md-7 main-column">
     <form method="POST">
         {% csrf_token %}
@@ -22,4 +22,4 @@
         </div>
     </form>
 </div>
-{% endblock content %}
+{% endblock content_center %}

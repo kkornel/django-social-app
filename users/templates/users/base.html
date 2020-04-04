@@ -21,18 +21,14 @@
     {% block stylesheets %}
     {% endblock stylesheets %}
 
-    {% comment %}
-    <title>
-        {% block title_block %}
-        Django - Master Thesis
-        {% endblock title_block %}
-    </title>
-    {% endcomment %}
-
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
-    <title>Django - Master Thesis</title>
+    <title>
+        {% block title %}
+        Django - Master Thesis
+        {% endblock title %}
+    </title>
     {% endif %}
 </head>
 

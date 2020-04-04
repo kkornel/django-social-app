@@ -44,6 +44,11 @@ class PostListView(LoginRequiredMixin, ListView):
         # logger.debug(posts_to_display.count())
         return posts_to_display.order_by('-date_posted')
 
+    def get_context_data(self, **kwargs):
+        context = super(PostListView, self).get_context_data(**kwargs)
+        context['title'] = 'Django Master Thesis - Home'
+        return context
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -58,6 +63,11 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user.profile
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(PostCreateView, self).get_context_data(**kwargs)
+        context['title'] = 'New'
+        return context
 
 
 class PostCreateViewModal(PostCreateView, BSModalCreateView):
@@ -89,6 +99,12 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             logger.debug(f'Image removed.')
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super(PostUpdateView, self).get_context_data(**kwargs)
+        context[
+            'title'] = f'Update your post: {self.get_object().content[:10]}...'
+        return context
+
     def test_func(self):
         """
         This function is run by UserPassesTestMixin to check something that we want to check.
@@ -116,6 +132,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user.profile == post.author
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDeleteView, self).get_context_data(**kwargs)
+        context['title'] = f'Delete: {self.get_object().content[:30]}...'
+        return context
 
 
 class PostDeleteViewModal(PostDeleteView, BSModalDeleteView):
@@ -298,12 +319,14 @@ def search_tags(request, tag):
         Q(content__icontains=query) | Q(location__icontains=query)).distinct()
     for post in posts:
         posts_results.append(post)
-    return render(
-        request, 'social/search.html', {
-            'title': f'{query}',
-            'users': list(set(users_results)),
-            'posts': list(set(posts_results))
-        })
+
+    context = {
+        'title': f'{query}',
+        'users': list(set(users_results)),
+        'posts': list(set(posts_results)),
+    }
+
+    return render(request, 'social/search.html', context)
 
 
 @login_required
@@ -323,9 +346,11 @@ def search(request):
             Q(content__icontains=q) | Q(location__icontains=q)).distinct()
         for post in posts:
             posts_results.append(post)
-    return render(
-        request, 'social/search.html', {
-            'title': f'Search {query}',
-            'users': list(set(users_results)),
-            'posts': list(set(posts_results))
-        })
+
+    context = {
+        'title': f'{query}',
+        'users': list(set(users_results)),
+        'posts': list(set(posts_results)),
+    }
+
+    return render(request, 'social/search.html', context)

@@ -48,7 +48,13 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+
+    context = {
+        'title': 'Sign Up!',
+        'form': form,
+    }
+
+    return render(request, 'users/register.html', context)
 
 
 def activate_account(request, uidb64, token):
@@ -96,7 +102,13 @@ def reset_password(request):
             return redirect('password_reset_done')
     else:
         form = user_forms.CaptchaPasswordResetForm()
-    return render(request, 'users/password_reset.html', {'form': form})
+
+    context = {
+        'title': 'Password reset',
+        'form': form,
+    }
+
+    return render(request, 'users/password_reset.html', context)
 
 
 class PasswordConfirmView(UpdateView):
@@ -106,6 +118,11 @@ class PasswordConfirmView(UpdateView):
     def get_object(self):
         return self.request.user
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Confirm password'
+        return context
+
     def get_success_url(self):
         return self.request.get_full_path()
 
@@ -114,8 +131,10 @@ class PasswordConfirmView(UpdateView):
 @check_recaptcha
 def password_change(request):
     if request.method == 'POST':
-        form = user_forms.CustomChangePasswordForm(data=request.POST,
-                                                   user=request.user)
+        form = user_forms.CustomChangePasswordForm(
+            data=request.POST,
+            user=request.user,
+        )
         if form.is_valid() and request.recaptcha_is_valid:
             form.save()
             update_session_auth_hash(request, form.user)
@@ -123,7 +142,13 @@ def password_change(request):
             return redirect('profile', username=request.user.username)
     else:
         form = user_forms.CustomChangePasswordForm(user=request.user)
-    return render(request, 'users/password_change.html', {'form': form})
+
+    context = {
+        'title': 'Password change',
+        'form': form,
+    }
+
+    return render(request, 'users/password_change.html', context)
 
 
 def is_user_owner_of_the_account(user, request):
@@ -135,7 +160,7 @@ def delete_user(request, user):
     user.delete()
     messages.success(request, 'Your account has been deleted.')
     logger.debug('Account has been deleted.')
-    return render(request, 'users/login.html', {})
+    return redirect('login')
 
 
 @login_required
@@ -158,10 +183,13 @@ def delete_account(request, username):
         delete_user(request, user)
         return redirect('login')
 
-    return render(request, 'users/account_delete_confirm.html', {
+    context = {
+        'title': 'Delete account',
         'form': form,
-        'myuser': request.user
-    })
+        'myuser': request.user,
+    }
+
+    return render(request, 'users/account_delete_confirm.html', context)
 
 
 class ProfileDetailListView(LoginRequiredMixin, ListView):
@@ -186,6 +214,7 @@ class ProfileDetailListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(ProfileDetailListView, self).get_context_data(**kwargs)
         context[self.detail_context_object_name] = self.object
+        context['title'] = f'{self.get_object().user.username}'
         return context
 
 
@@ -194,9 +223,8 @@ class UserUpdateViewModal(UserPassesTestMixin, BSModalUpdateView):
     template_name = 'users/profile_edit_modal.html'
     form_class = user_forms.UserUpdateFormModal
     # success_message = 'Email successfully changed.'
-    success_message = ''
-
     # success_url = '/profile'
+    success_message = ''
 
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
@@ -211,36 +239,31 @@ class ProfileUpdateViewModal(UserPassesTestMixin, BSModalUpdateView):
     template_name = 'users/profile_edit_modal.html'
     form_class = user_forms.ProfileUpdateViewModal
     # success_message = 'Profile successfully updated.'
-    success_message = ''
-
     # success_url = '/profile'
+    success_message = ''
 
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER')
 
     def form_valid(self, form):
-        # TODO Still no idea how to replace with default.
-        logger.debug('form_valid')
+        profile = self.request.user.profile
         delete_current_image = form.cleaned_data['delete_current_image']
-        image = form.cleaned_data['image']
-        logger.debug(image)
-        logger.debug(type(image))
-        logger.debug(delete_current_image)
-        if delete_current_image:
-            profile = self.request.user.profile
-            current_image = profile.image
-            if current_image.name != 'default.jpg':
-                logger.debug("current_image.name != 'default.jpg'")
-                profile.image.delete(save=False)
-                logger.debug('deleted old')
-                new = storage.open('default.jpg').read()
-                # logger.debug(new)
-                logger.debug(type(new))
-                filee = File(new)
-                # logger.debug(filee)
-                logger.debug(type(filee))
-                profile.image.save('default.jpg', filee)
-                logger.debug('lil')
+
+        image_from_profile = profile.image
+        image_from_form = form.cleaned_data['image']
+
+        uploaded_new_image = image_from_form != image_from_profile
+
+        if delete_current_image and not uploaded_new_image:
+            form.instance.image.delete(save=False)
+
+        if uploaded_new_image:
+            # Update and delete
+            # I have to delete current image,
+            # but the image will be updated by saving form,
+            # so it is not on me to do.
+            profile.delete_image()
+
         return super().form_valid(form)
 
     def test_func(self):

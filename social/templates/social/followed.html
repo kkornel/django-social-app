@@ -14,7 +14,11 @@
         <article class="media">
             <span class="follower-img-sm-span">
                 <a href="{% url 'profile' profile.user.username %}">
+                    {% if profile.image %}
                     <img class="rounded-circle follower-img-sm" src="{{ profile.image.url }}">
+                    {% else %}
+                    <img class="rounded-circle follower-img-sm" src="{% get_media_prefix %}default.jpg">
+                    {% endif %}
                 </a>
             </span>
             <div class="media-body">
