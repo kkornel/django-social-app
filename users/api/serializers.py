@@ -16,8 +16,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     followers = serializers.SerializerMethodField('get_followers')
     followers_count = serializers.SerializerMethodField('get_followers_count')
 
-    following = serializers.SerializerMethodField('get_following')
-    following_count = serializers.SerializerMethodField('get_following_count')
+    following = serializers.SerializerMethodField('get_followed')
+    following_count = serializers.SerializerMethodField('get_followed_count')
 
     posts = serializers.SerializerMethodField('get_posts')
     posts_count = serializers.SerializerMethodField('get_posts_count')
@@ -61,14 +61,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_followers_count(self, profile):
         return profile.followers.all().count()
 
-    def get_following(self, profile):
+    def get_followed(self, profile):
         following = []
-        for follow in profile.get_following():
+        for follow in profile.get_followed():
             following.append(follow.user.username)
         return following
 
-    def get_following_count(self, profile):
-        return profile.get_following().count()
+    def get_followed_count(self, profile):
+        return profile.get_followed().count()
 
     def get_posts(self, profile):
         posts = []

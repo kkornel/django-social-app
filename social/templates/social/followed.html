@@ -31,24 +31,24 @@
 
                 {% if user.profile != profile %}
                 {% if is_following %}
-                <a id="follow-btn" class="link-hover btn purple-btn-outline"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', '{{ csrf_token }}');">Following</a>
+                <a id="follow-btn-{{profile.pk}}" class="link-hover btn purple-btn-outline-modal"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', true, this.id, '{{csrf_token}}');">Following</a>
                 {% else %}
-                <a id="follow-btn" class="link-hover btn purple-btn"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}','{{ csrf_token }}');">Follow</a>
+                <a id="follow-btn-{{profile.pk}}" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', true, this.id, '{{csrf_token}}');">Follow</a>
                 {% endif %}
                 {% endif %}
-                </a>
             </div>
         </article>
     </div>
     {% empty %}
-    <div class="content-center" style="margin-top: 32px;">
-        <p>No follows.</p>
+    <div class="content-center" style="margin-top: 24px; margin-bottom: 24px;">
+        <p class="mb-0">No follows.</p>
     </div>
     {% endfor %}
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+    <button type="button" class="btn btn-outline-secondary" onClick="window.location.reload();"
+        data-dismiss="modal">Close</button>
 </div>

@@ -40,6 +40,9 @@ def register(request):
         if form.is_valid() and request.recaptcha_is_valid:
             user = form.save()
             user.send_verification_email(request)
+            # TODO remove later
+            user.is_active = True
+            user.save()
             messages.info(
                 request, f'A confirmation email has been sent to {user.email}')
             return redirect('login')
@@ -63,9 +66,11 @@ def activate_account(request, uidb64, token):
         )
         return redirect('login')
     else:
-        messages.error(request,
-                       'Activation link is invalid!',
-                       extra_tags='danger')
+        messages.error(
+            request,
+            'Activation link is invalid!',
+            extra_tags='danger',
+        )
         return redirect('login')
 
 
@@ -86,7 +91,8 @@ def reset_password(request):
                 request=request,
                 from_email=EMAIL_FROM_EMAIL,
                 html_email_template_name='users/mail_password_reset.html',
-                subject_template_name='users/mail_password_reset_subject.txt')
+                subject_template_name='users/mail_password_reset_subject.txt',
+            )
             return redirect('password_reset_done')
     else:
         form = user_forms.CaptchaPasswordResetForm()

@@ -1,4 +1,14 @@
 .my-modal-content {
     color: #d9d9d9;
-    background-color:#15181c;
+    background-color:#0c0c0d;
+}
+
+.purple-btn-outline-modal {
+  border: 1px solid #865dca;
+  background-color:#0c0c0d;
+  color: #865dca !important;
+}
+.purple-btn-outline-modal:hover {
+  background-color: #865dca;
+  color: #ffffff !important;
 }

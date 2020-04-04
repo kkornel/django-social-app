@@ -7,7 +7,7 @@ from bootstrap_modal_forms.generic import (BSModalCreateView,
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views import View, generic
 from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
@@ -141,6 +141,7 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = social_forms.CommentCreateForm()
+        context['title'] = f'{self.get_object().content[:50]}...'
         return context
 
 
@@ -201,56 +202,68 @@ class CommentDeleteViewModal(BSModalDeleteView):
 @login_required
 def like_post(request):
     if request.method == 'POST':
-        postId = request.POST.get('postId')
-        userId = request.POST.get('userId')
+        post_pk = request.POST.get('post_pk')
+        user_pk = request.POST.get('user_pk')
 
-        post = Post.objects.get(pk=int(postId))
-        profile = Profile.objects.get(pk=int(userId))
+        post = Post.objects.get(pk=int(post_pk))
+        profile = Profile.objects.get(pk=int(user_pk))
 
         if profile in post.likes.all():
             post.likes.remove(profile)
         else:
             post.likes.add(profile)
-
-    response = post.likes.all().count()
-    return HttpResponse(response)
+        response = {
+            "likes_count": post.likes.all().count(),
+        }
+        return HttpResponse(json.dumps(response))
+    response = {
+        "error": "GET method",
+    }
+    return HttpResponse(json.dumps(response))
 
 
 @login_required
 def follow_user(request):
     if request.method == 'POST':
-        followerID = request.POST.get('followerID')
-        followingID = request.POST.get('followingID')
+        follower_id = request.POST.get('follower_id')
+        followed_id = request.POST.get('followed_id')
 
-        # logger.debug(followerID)
-        # logger.debug(followingID)
+        # logger.debug(follower_id)
+        # logger.debug(followed_id)
 
-        follower = Profile.objects.get(pk=int(followerID))
-        following = Profile.objects.get(pk=int(followingID))
+        follower = Profile.objects.get(pk=int(follower_id))
+        followed = Profile.objects.get(pk=int(followed_id))
 
         # logger.debug(follower)
-        # logger.debug(following)
+        # logger.debug(followed)
 
-        if follower.is_following(following):
+        if follower.is_following(followed):
             # logger.debug('Already following. Removing follow.')
-            follower.remove_follow(following)
-            # logger.debug(follower.get_following())
-            # logger.debug(following.get_following())
+            follower.unfollow(followed)
+            # logger.debug(follower.get_followed())
+            # logger.debug(following.get_followed())
             # logger.debug(follower.get_followers())
             # logger.debug(following.get_followers())
 
         else:
             # logger.debug('Adding follow.')
-            follower.add_follow(following)
-            # logger.debug(follower.get_following())
-            # logger.debug(following.get_following())
+            follower.follow(followed)
+            # logger.debug(follower.get_followed())
+            # logger.debug(following.get_followed())
             # logger.debug(follower.get_followers())
             # logger.debug(following.get_followers())
 
-    followers = following.get_followers().count()
-    following = following.get_following().count()
-    response = {"followers": followers, "following": following}
+        followers = followed.get_followers().count()
+        following = followed.get_followed().count()
+        response = {
+            "followers": followed.get_followers().count(),
+            "following": followed.get_followed().count(),
+        }
+        return HttpResponse(json.dumps(response))
     # logger.debug(response)
+    response = {
+        "error": "GET method",
+    }
     return HttpResponse(json.dumps(response))
 
 
@@ -265,7 +278,7 @@ class FollowersView(ListView):
 
 
 class FollowingView(FollowersView):
-    template_name = 'social/following.html'
+    template_name = 'social/followed.html'
 
     def get_queryset(self):
         username = self.kwargs['username']
@@ -274,17 +287,45 @@ class FollowingView(FollowersView):
 
 
 @login_required
+def search_tags(request, tag):
+    users_results = []
+    posts_results = []
+    query = f'#{tag}'
+    profiles = Profile.objects.filter(Q(bio__icontains=query)).distinct()
+    for profile in profiles:
+        users_results.append(profile.user)
+    posts = Post.objects.filter(
+        Q(content__icontains=query) | Q(location__icontains=query)).distinct()
+    for post in posts:
+        posts_results.append(post)
+    return render(
+        request, 'social/search.html', {
+            'title': f'{query}',
+            'users': list(set(users_results)),
+            'posts': list(set(posts_results))
+        })
+
+
+@login_required
 def search(request):
-    template = 'social/search.html'
-    results = []
+    users_results = []
+    posts_results = []
     query = request.GET.get('q')
     queries = query.split(' ')
     for q in queries:
         users = User.objects.filter(Q(username__icontains=q)).distinct()
         for user in users:
-            results.append(user)
+            users_results.append(user)
+        profiles = Profile.objects.filter(Q(bio__icontains=q)).distinct()
+        for profile in profiles:
+            users_results.append(profile.user)
         posts = Post.objects.filter(
             Q(content__icontains=q) | Q(location__icontains=q)).distinct()
         for post in posts:
-            results.append(post)
-    return render(request, template, {'results': list(set(results))})
+            posts_results.append(post)
+    return render(
+        request, 'social/search.html', {
+            'title': f'Search {query}',
+            'users': list(set(users_results)),
+            'posts': list(set(posts_results))
+        })

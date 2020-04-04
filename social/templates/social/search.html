@@ -7,7 +7,6 @@
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{% static 'users/profile.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'social/followers.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
 {% endblock stylesheets %}
 
 {% block scripts %}
@@ -30,9 +29,66 @@
 
 {% block content_center %}
 <div class="col-md-7 main-column pr-0 pl-0">
-    {% for result in results %}
+    <div class="search-header">
+        <p>Users:</p>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    <div class="my-horizontal-bar"></div>
 
-    {% if result|get_class == 'Post' %}
+    {% for result in users %}
+
+    <div onclick="location.href='/{{ result.username }}/';" style="cursor: pointer; "
+        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
+        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
+        <article class="media my-post">
+            <a href=" {% url 'profile' result.username %}">
+                <img class="rounded-circle post-author-img" src="{{ result.profile.image.url }}">
+            </a>
+            <div class="media-body">
+                <div class="pt-0">
+                    <h2 class="account-heading">
+                        <a class="follower-author-name" href="{% url 'profile' result.username %}">
+                            {{ result.username }}
+                        </a>
+                    </h2>
+                </div>
+                <div>
+                    {{ result.profile.bio|render_tags_and_links }}
+                </div>
+            </div>
+            {% if user.profile != result.profile %}
+            <div class="pt-3">
+                {% is_already_following user.profile.pk result.profile.pk as is_following %}
+
+                {% if is_following %}
+                <a id="follow-btn-{{result.profile.pk}}" class="link-hover btn purple-btn-outline"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}', false, this.id, '{{csrf_token}}');">Following</a>
+                {% else %}
+                <a id="follow-btn-{{result.profile.pk}}" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}', false, this.id, '{{csrf_token}}');">Follow</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </article>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    {% empty %}
+    <div class="content-center no-results">
+        <p>No results.</p>
+    </div>
+    {% endfor %}
+
+    <div class="my-horizontal-bar"></div>
+    <div class="my-horizontal-bar"></div>
+
+    <div class="search-header">
+        <p>Posts:</p>
+    </div>
+    <div class="my-horizontal-bar"></div>
+    <div class="my-horizontal-bar"></div>
+
+    {% for result in posts %}
+
     <div onclick="location.href='/post/{{ result.id }}/';" style="cursor: pointer; "
         onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
         onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
@@ -124,46 +180,8 @@
         </article>
     </div>
     <div class="my-horizontal-bar"></div>
-
-    {% elif result|get_class == 'User' %}
-    <div onclick="location.href='/{{ result.username }}/';" style="cursor: pointer; "
-        onmouseover="this.getElementsByClassName('my-post')[0].style.backgroundColor = '#15181c';"
-        onmouseout=" this.getElementsByClassName('my-post')[0].style.backgroundColor='black';">
-        <article class="media my-post">
-            <a href=" {% url 'profile' result.username %}">
-                <img class="rounded-circle post-author-img" src="{{ result.profile.image.url }}">
-            </a>
-            <div class="media-body">
-                <div class="pt-2">
-                    <h2 class="account-heading">
-                        <a class="follower-author-name" href="{% url 'profile' result.username %}">
-                            {{ result.username }}
-                        </a>
-                    </h2>
-                </div>
-            </div>
-            <div class="pt-3">
-                {% is_already_following user.profile.pk result.profile.pk as is_following %}
-
-                {% if user.profile != result.profile %}
-                {% if is_following %}
-                <a id="follow-btn" class="link-hover btn purple-btn-outline"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}', '{{ csrf_token }}');">Following</a>
-                {% else %}
-                <a id="follow-btn" class="link-hover btn purple-btn"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{result.profile.pk}}','{{ csrf_token }}');">Follow</a>
-                {% endif %}
-                {% endif %}
-                </a>
-            </div>
-        </article>
-    </div>
-    <div class="my-horizontal-bar"></div>
-
-    {% endif %}
-
     {% empty %}
-    <div class="content-center" style="margin-top: 32px;">
+    <div class="content-center no-results">
         <p>No results.</p>
     </div>
     {% endfor %}

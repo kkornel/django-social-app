@@ -6,7 +6,6 @@
 <div class="col-sm-6 offset-sm-3 mt-3 borders">
     <form method="POST">
         {% csrf_token %}
-
         <fieldset class="form-group mb-1">
             <legend class="border-bottom mb-3 pb-1">Join Today!</legend>
             {{ form|crispy }}
@@ -17,7 +16,7 @@
             </div>
         </fieldset>
         <div class="form-group text-center mt-3">
-            <button class="btn btn-dark" type="submit">Sign Up</button>
+            <button class="btn purple-btn" type="submit">Sign Up</button>
         </div>
     </form>
     <div class="border-top text-center pt-1 mb-2">

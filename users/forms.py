@@ -13,7 +13,8 @@ class CaptchaPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(
         label='',
         max_length=254,
-        widget=forms.EmailInput(attrs={'placeholder': 'Email address'}))
+        widget=forms.EmailInput(attrs={'placeholder': 'Email address'}),
+    )
 
 
 class CustomSetPasswordForm(SetPasswordForm):
@@ -23,33 +24,37 @@ class CustomSetPasswordForm(SetPasswordForm):
     """
     new_password1 = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'placeholder': 'New password'}))
-
+        widget=forms.PasswordInput(attrs={'placeholder': 'New password'}),
+    )
     new_password2 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'New password confirmation'}))
+            attrs={'placeholder': 'New password confirmation'}),
+    )
 
 
 class CustomChangePasswordForm(PasswordChangeForm):
     """Custom PasswordChangeForm only for styling Password fields."""
     old_password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Current password'}))
+        widget=forms.PasswordInput(attrs={'placeholder': 'Current password'}),
+    )
     new_password1 = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'placeholder': 'New password'}))
-
+        widget=forms.PasswordInput(attrs={'placeholder': 'New password'}),
+    )
     new_password2 = forms.CharField(
         label='',
         widget=forms.PasswordInput(
-            attrs={'placeholder': 'New password confirmation'}))
+            attrs={'placeholder': 'New password confirmation'}),
+    )
 
 
 class PasswordConfirmForm(forms.ModelForm):
     confirm_password = forms.CharField(
         label='',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Current password'}))
+        widget=forms.PasswordInput(attrs={'placeholder': 'Current password'}),
+    )
 
     class Meta:
         model = User
@@ -93,28 +98,31 @@ class ProfileUpdateViewModal(BSModalForm):
                 'style':
                 'resize:none; background-color: #15181c; color: #d9d9d9;',
                 'placeholder': 'Tell others a little bit about yourself!',
-            }))
-
+            }),
+    )
     city = forms.CharField(
         required=False,
         max_length=100,
         widget=forms.TextInput(attrs={
             'placeholder': 'Oslo, Norway',
-        }))
-
+        }),
+    )
     website = forms.CharField(
         required=False,
         max_length=30,
         widget=forms.TextInput(attrs={
             'placeholder': 'stackoverflow.com',
-        }))
-
-    image = forms.ImageField(label='Photo',
-                             required=False,
-                             widget=forms.FileInput)
-
+        }),
+    )
+    image = forms.ImageField(
+        label='Photo',
+        required=False,
+        widget=forms.FileInput,
+    )
     delete_current_image = forms.BooleanField(
-        label='Delete current image checkbox:', required=False)
+        label='Delete current image checkbox:',
+        required=False,
+    )
 
     class Meta:
         model = Profile

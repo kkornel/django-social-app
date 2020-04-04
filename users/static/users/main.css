@@ -47,6 +47,19 @@ textarea[name=content]:focus {
   background-color: #15181c;
 }
 
+textarea[name=bio] {
+    width: 100%;
+    color: #d9d9d9;
+    border-color: #2f3336;
+    background-color: #15181c;
+}
+
+textarea[name=bio]:focus {
+  color: #d9d9d9;
+  border-color: #3c2562;
+  background-color: #15181c;
+}
+
 input[type=text], 
 input[type=email],
 input[type=checkbox],
@@ -130,6 +143,13 @@ a:hover {
   background: #ffffff;
   padding: 10px 20px;
   border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.block-content-borders {
+  padding: 10px 20px;
+  border: 1px solid #2f3336;
   border-radius: 3px;
   margin-bottom: 20px;
 }
@@ -229,6 +249,15 @@ a:hover {
   width: 100%;
 }
 
+.my-horizontal-bar-thin {
+  border-bottom-width: 1px;
+  border-bottom-color: #2f3336;
+  border-bottom-style: solid;
+  padding-left: 0px;
+  margin-left: 0px;
+  width: 100%;
+}
+
 .my-horizontal-bar-light {
   border-bottom-width: 1px;
   border-bottom-color: #d9d9d9;
@@ -321,26 +350,31 @@ a.nav-back-span-a:hover {
 .purple-btn-outline {
   border: 1px solid #865dca;
   background-color: #000000;
-  color: #865dca;
-}
-
-.purple-btn-outline-modal {
-  border: 1px solid #865dca;
-  background-color:#15181c;
-  color: #865dca;
+  color: #865dca !important;
 }
 
 .purple-btn-outline:hover {
   background-color: #865dca;
-  color: #ffffff;
-}
-
-.purple-btn-outline-modal:hover {
-  background-color: #865dca;
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 
+.search-header {
+  font-weight: bold;
+  margin-top: 16px;
+  margin-left: 16px;
+  font-size: 18px;
+}
+
+.no-results {
+  margin-top: 32px;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.no-results > p {
+  margin-bottom: 0px;
+}
 
 
 /* Icon Wobble Horizontal */

@@ -130,16 +130,20 @@ class User(AbstractBaseUser):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL,
-                                on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
     bio = models.CharField(max_length=300, blank=True)
     city = models.CharField(max_length=100, blank=True)
     website = models.CharField(max_length=40, blank=True)
     image = models.ImageField(default='default.jpg', upload_to=get_file_path)
-    follows = models.ManyToManyField('self',
-                                     through='Follow',
-                                     symmetrical=False,
-                                     related_name='followers')
+    follows = models.ManyToManyField(
+        'self',
+        through='Follow',
+        symmetrical=False,
+        related_name='followers',
+    )
 
     def save(self, *args, **kwargs):
         """
@@ -159,23 +163,24 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
-    def add_follow(self, user):
-        follow, created = Follow.objects.get_or_create(from_user=self,
-                                                       to_user=user)
-        return follow
+    def follow(self, user):
+        if not self.is_following(user):
+            follow, created = Follow.objects.get_or_create(from_user=self,
+                                                           to_user=user)
+            return follow
 
-    def remove_follow(self, user):
-        Follow.objects.filter(from_user=self, to_user=user).delete()
-        return
+    def unfollow(self, user):
+        if self.is_following(user):
+            Follow.objects.filter(from_user=self, to_user=user).delete()
 
-    def get_following(self):
+    def get_followed(self):
         return self.follows.filter(to_users__from_user=self)
 
     def get_followers(self):
         return self.followers.filter(from_users__to_user=self)
 
     def is_following(self, user):
-        return user in self.get_following()
+        return user in self.get_followed()
 
     def is_followed_by(self, user):
         return user in self.get_followers()
@@ -185,12 +190,16 @@ class Profile(models.Model):
 
 
 class Follow(models.Model):
-    from_user = models.ForeignKey(Profile,
-                                  on_delete=models.CASCADE,
-                                  related_name='from_users')
-    to_user = models.ForeignKey(Profile,
-                                on_delete=models.CASCADE,
-                                related_name='to_users')
+    from_user = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='from_users',
+    )
+    to_user = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='to_users',
+    )
 
     def __str__(self):
         return f'{self.from_user.user.username}->{self.to_user.user.username}'

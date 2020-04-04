@@ -49,14 +49,19 @@ urlpatterns = [
              template_name='users/password_reset_done.html'),
          name='password_reset_done'),
     # My custom way in order to style input.
-    path(
-        'password-reset-confirm/<uidb64>/<token>/',  # after pressing button on reset password, Django tries to go to this route but it does not exist, so we are creating it here. It also takes 2 parameters. uidb64 and token which ensures that person who is calling it is actually that person.
-        auth_views.PasswordResetConfirmView.as_view(
-            template_name='users/password_reset_confirm.html',
-            form_class=users_forms.CustomSetPasswordForm),
-        name='password_reset_confirm'),
+    # after pressing button on reset password, Django tries to go to this route
+    # but it does not exist, so we are creating it here. It also takes 2 parameters.
+    # uidb64 and token which ensures that person who is calling it is actually that person.
+    path('password-reset-confirm/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='users/password_reset_confirm.html',
+             form_class=users_forms.CustomSetPasswordForm),
+         name='password_reset_confirm'),
     # Default way, Corey showed this:
-    # path('password-reset-confirm/<uidb64>/<token>/',  # after pressing button on reset password, Django tries to go to this route but it does not exist, so we are creating it here. It also takes 2 parameters. uidb64 and token which ensures that person who is calling it is actually that person.
+    # after pressing button on reset password, Django tries to go to this route
+    # but it does not exist, so we are creating it here. It also takes 2 parameters.
+    # uidb64 and token which ensures that person who is calling it is actually that person.
+    # path('password-reset-confirm/<uidb64>/<token>/',
     #      auth_views.PasswordResetConfirmView.as_view(
     #          template_name='users/password_reset_confirm.html'),
     #      name='password_reset_confirm'),

@@ -5,11 +5,18 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from users.models import User
+from users.models import Profile, User
 
 from .serializers import ProfileSerializer
 
 logger = logging.getLogger(__name__)
+
+
+class ProfileListAPiView(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+
+    permission_classes = (AllowAny, )
 
 
 class ProfileDetailAPiView(generics.RetrieveAPIView):

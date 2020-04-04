@@ -1,20 +1,58 @@
-function send_like(event, postPk, userPk, postId, csrf) {
-    const aHrefLike = $('#' + postId);
+function send_like(event, post_pk, user_pk, a_id, csrf) {
+    const aHrefLike = $('#' + a_id);
     const isLiked = aHrefLike.hasClass('liked');
-    const smallTextLikesCount = $('#' + postId).find("#post-likes-count");
+    const smallTextLikesCount = $('#' + a_id).find("#post-likes-count");
     aHrefLike.toggleClass("liked");
     aHrefLike.toggleClass("heart");
     $.ajax({
         url: '/like/',
         type: 'POST',
         data: {
-            'postId': postPk,
-            'userId': userPk,
+            'post_pk': post_pk,
+            'user_pk': user_pk,
             csrfmiddlewaretoken: csrf,
         },
         success: function (data) {
-            let likesCount = parseInt(data);
+            console.log(data);
+            let likes_count = JSON.parse(data)["likes_count"];
+            let likesCount = parseInt(likes_count);
             smallTextLikesCount.text(likesCount);
+        },
+        error: function (data) {
+            console.log(data);
+        },
+    });
+    event.stopImmediatePropagation();
+}
+
+function follow_user(event, follower_id, followed_id, is_from_modal, a_id, csrf) {
+    const aHrefFollow = $('#' + a_id);
+    if (is_from_modal) {
+        aHrefFollow.toggleClass("purple-btn-outline-modal");
+    } else {
+        aHrefFollow.toggleClass("purple-btn-outline");
+    }
+    aHrefFollow.toggleClass("purple-btn");
+    aHrefFollow.text((aHrefFollow.text() == 'Follow') ? 'Following' : 'Follow');
+    $.ajax({
+        url: '/follow/',
+        type: 'POST',
+        data: {
+            'follower_id': follower_id,
+            'followed_id': followed_id,
+            csrfmiddlewaretoken: csrf,
+        },
+        success: function (data) {
+            console.log(data);
+            if (is_from_modal) {
+                return
+            }
+            data = JSON.parse(data);
+            followers = data["followers"];
+            following = data["following"];
+            console.log(data["following"]);
+            $('#followers-count').text(followers);
+            $('#following-count').text(following);
         },
         error: function (data) {
             console.log(data);
@@ -46,38 +84,5 @@ function stopPropagation(event) {
 }
 
 function stopImmediatePropagation(event) {
-    event.stopImmediatePropagation();
-}
-
-// function stopImmediatePropagation(event) {
-//     event.stopImmediatePropagation();
-// }
-
-function follow_user(event, followerID, followingID, csrf) {
-    const aHrefFollow = $('#follow-btn');
-    aHrefFollow.toggleClass("purple-btn-outline");
-    aHrefFollow.toggleClass("purple-btn");
-    aHrefFollow.text((aHrefFollow.text() == 'Follow') ? 'Following' : 'Follow');
-    $.ajax({
-        url: '/follow/',
-        type: 'POST',
-        data: {
-            'followerID': followerID,
-            'followingID': followingID,
-            csrfmiddlewaretoken: csrf,
-        },
-        success: function (data) {
-            console.log(data);
-            data = JSON.parse(data);
-            followers = data["followers"];
-            following = data["following"];
-            console.log(data["following"]);
-            $('#followers-count').text(followers);
-            $('#following-count').text(following);
-        },
-        error: function (data) {
-            console.log(data);
-        },
-    });
     event.stopImmediatePropagation();
 }

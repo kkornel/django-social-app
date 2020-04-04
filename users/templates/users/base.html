@@ -1,4 +1,5 @@
 {% load static %}
+{% load filters %}
 <!DOCTYPE HTML>
 
 <head>
@@ -20,11 +21,19 @@
     {% block stylesheets %}
     {% endblock stylesheets %}
 
+    {% comment %}
     <title>
         {% block title_block %}
         Django - Master Thesis
         {% endblock title_block %}
     </title>
+    {% endcomment %}
+
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Django - Master Thesis</title>
+    {% endif %}
 </head>
 
 <body>
@@ -112,7 +121,7 @@
 
         <div class='row content-center'>
             {% comment %}
-            <div class="col-md-2  my-sidebar">
+            <div class="col-md-2 my-sidebar">
                 <div class="content-section">
                     <h3>Our Sidebar</h3>
                     <p class='text-muted'>You can put any information here you'd like.
@@ -132,9 +141,6 @@
         </div>
 
         <div class="row">
-            <!-- ANCHOR Borders  -->
-            <!-- <div class="col-md-2  my-sidebar brd-sidebar"> -->
-
             {% block content %}
             {% endblock content %}
         </div>

@@ -129,9 +129,9 @@ class PostListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         for post in response.context['posts']:
-            self.assertTrue(response.context['user'] == post.author.user
-                            or post.author in
-                            response.context['user'].profile.get_following())
+            self.assertTrue(
+                response.context['user'] == post.author.user or
+                post.author in response.context['user'].profile.get_followed())
 
     def test_posts_ordered_by_newest(self):
         self.client.login(email=self.user.email, password=self.password)

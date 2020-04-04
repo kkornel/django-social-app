@@ -1,4 +1,4 @@
-{% extends 'users/base.html' %}
+{% extends "users/base.html" %}
 
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
@@ -7,6 +7,7 @@
 <div class="col-md-7 main-column">
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+
         <fieldset class="mb-0">
             <legend class="border-bottom mb-0">Add new post</legend>
             {% for field in form %}
@@ -21,8 +22,8 @@
             </div>
             {% endfor %}
         </fieldset>
+
         <div class="form-group align-right">
-            <!-- <a class="btn btn-outline-secondary mr-2" href="javascript:history.back()">Cancel</a> -->
             <a class="btn btn-outline-secondary mr-2" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
             <button class="btn purple-btn-outline" type="submit">Add</button>
         </div>

@@ -11,38 +11,6 @@
 
 {% block scripts %}
 <script>
-    // Moved to the scripts.js
-    /*
-    function follow_user(event, followerID, followingID, csrf) {
-        const aHrefFollow = $('#follow-btn');
-        aHrefFollow.toggleClass("purple-btn-outline");
-        aHrefFollow.toggleClass("purple-btn");
-        aHrefFollow.text((aHrefFollow.text() == 'Follow') ? 'Following' : 'Follow');
-        $.ajax({
-            url: '/follow/',
-            type: 'POST',
-            data: {
-                'followerID': followerID,
-                'followingID': followingID,
-                csrfmiddlewaretoken: csrf,
-            },
-            success: function (data) {
-                console.log(data);
-                data = JSON.parse(data);
-                followers = data["followers"];
-                following = data["following"];
-                console.log(data["following"]);
-                $('#followers-count').text(followers);
-                $('#following-count').text(following);
-            },
-            error: function (data) {
-                console.log(data);
-            },
-        });
-        event.stopImmediatePropagation();
-    }
-    */
-
     $(document).ready(function () {
         $(".edit-profile").modalForm({
             formURL: "{% url 'edit-profile' user.pk %}"
@@ -137,13 +105,12 @@
                 {% is_already_following user.profile.pk profile.pk as is_following %}
 
                 {% if is_following %}
-                <a id="follow-btn" class="link-hover btn purple-btn-outline"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', '{{ csrf_token }}');">Following</a>
+                <a id="follow-btn-{{profile.pk}}" class="link-hover btn purple-btn-outline"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', false, this.id, '{{csrf_token}}');">Following</a>
                 {% else %}
-                <a id="follow-btn" class="link-hover btn purple-btn"
-                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}','{{ csrf_token }}');">Follow</a>
+                <a id="follow-btn-{{profile.pk}}" class="link-hover btn purple-btn"
+                    onclick="follow_user(event, '{{user.profile.pk}}', '{{profile.pk}}', false, this.id, '{{csrf_token}}');">Follow</a>
                 {% endif %}
-                </a>
             </div>
             {% endif %}
         </div>
@@ -177,7 +144,7 @@
                 </div>
             </div>
 
-            <p class="mb-1">{{ profile.bio|render_tags_and_links }}</p>
+            <p class="mt-2 mb-3">{{ profile.bio|render_tags_and_links }}</p>
 
             <div class="row content-between mr-0 ml-0 mb-0 mt-2">
                 {% if profile.city %}
@@ -228,9 +195,6 @@
                     </a>
                     <span class="post-metadata-text ml-1 mr-1"> · </span>
                     {% if post.location %}
-                    <!-- <a class="post-metadata-text mr-2" href="https://www.google.pl/maps/place/{{ post.location }}">
-                        {{ post.location }}
-                    </a> -->
                     <span class="post-metadata-text no-decoration">
                         <a target="_blank"
                             onclick="openInNewTab(event, 'https:\/\/www.google.pl/maps/place/{{ post.location }}');">
@@ -311,7 +275,7 @@
     </div>
     <div class="my-horizontal-bar"></div>
     {% empty %}
-    <div class="content-center" style="margin-top: 32px;">
+    <div class="content-center" style="margin-top: 32px; margin-bottom: 32px;">
         <p>User has no posts.</p>
     </div>
     {% endfor %}

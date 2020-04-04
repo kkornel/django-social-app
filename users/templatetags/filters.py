@@ -81,13 +81,10 @@ def has_user_commented(userId, postId):
 
 @register.simple_tag
 def is_already_following(followerID, followingID):
-    logger.debug(f'FILTERS: {followerID} {followingID}')
-
     try:
         follower = Profile.objects.get(pk=followerID)
         following = Profile.objects.get(pk=followingID)
         is_following = follower.is_following(following)
-        logger.debug(f'FILTERS: {is_following}')
         return is_following
     except Exception:
         return False

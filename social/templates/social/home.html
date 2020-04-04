@@ -1,10 +1,9 @@
 {% extends "users/base.html" %}
 
 {% load static %}
-{% load filters  %}
+{% load filters %}
 
 {% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{% static 'users/posts.css' %}">
 {% endblock stylesheets %}
 
 {% block scripts %}
@@ -44,10 +43,7 @@
                     </a>
                     <span class="post-metadata-text ml-1 mr-1"> · </span>
                     {% if post.location %}
-                    <!-- <a class="post-metadata-text mr-2" href="https://www.google.pl/maps/place/{{ post.location }}"
-                        target="_blank">
-                        {{ post.location }}
-                    </a> -->
+
                     <a class="post-metadata-text" href="" target="_blank"
                         onclick="openInNewTab(event, 'https:\/\/www.google.pl/maps/place/{{ post.location }}');">
                         {{ post.location }}

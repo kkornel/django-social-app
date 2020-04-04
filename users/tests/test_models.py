@@ -39,10 +39,10 @@ class ProfileTestModel(TestCase):
 
     def test_user1_following_user2(self):
         self.profile1.add_follow(self.profile2)
-        self.assertIn(self.profile2, self.profile1.get_following())
+        self.assertIn(self.profile2, self.profile1.get_followed())
         self.assertIn(self.profile1, self.profile2.get_followers())
         self.assertNotIn(self.profile2, self.profile1.get_followers())
-        self.assertNotIn(self.profile1, self.profile2.get_following())
+        self.assertNotIn(self.profile1, self.profile2.get_followed())
         self.assertTrue(self.profile1.is_following(self.profile2))
         self.assertFalse(self.profile2.is_following(self.profile1))
         self.assertTrue(self.profile2.is_followed_by(self.profile1))

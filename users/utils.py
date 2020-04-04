@@ -24,8 +24,11 @@ from djangoapp.settings import EMAIL_FROM_EMAIL
 
 
 def send_email(to_email, subject, message):
-    send_mail(subject,
-              message,
-              EMAIL_FROM_EMAIL, [to_email],
-              fail_silently=False,
-              html_message=message)
+    send_mail(
+        subject,
+        message,
+        EMAIL_FROM_EMAIL,
+        [to_email],
+        fail_silently=False,
+        html_message=message,
+    )

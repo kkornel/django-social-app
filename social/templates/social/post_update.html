@@ -1,4 +1,4 @@
-{% extends 'users/base.html' %}
+{% extends "users/base.html" %}
 
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
@@ -21,8 +21,8 @@
             </div>
             {% endfor %}
         </fieldset>
+
         <div class="form-group align-right">
-            <!-- <a class="btn btn-outline-secondary mr-2" href="{% url 'post-detail' post.id %}">Cancel</a> -->
             <a class="btn btn-outline-secondary mr-2" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
             <button class="btn purple-btn-outline" type="submit">Update</button>
         </div>

@@ -16,17 +16,21 @@ class Post(models.Model):
     # It is 'one to many' relation, because 1 user can have multiple posts.
     # It is done by ForeginKey.
     # on_delete means what happens when user is deleted, CASCADE means delete all his posts.
-    author = models.ForeignKey(Profile,
-                               on_delete=models.CASCADE,
-                               related_name='posts')
+    author = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='posts',
+    )
     content = models.TextField(max_length=280)
     date_posted = models.DateTimeField(default=timezone.now)
     location = models.CharField(max_length=40, blank=True)
     image = models.ImageField(upload_to=get_file_path, blank=True)
-    likes = models.ManyToManyField(Profile,
-                                   blank=True,
-                                   through='Like',
-                                   related_name='likes')
+    likes = models.ManyToManyField(
+        Profile,
+        blank=True,
+        through='Like',
+        related_name='likes',
+    )
 
     def save(self, *args, **kwargs):
         """
@@ -54,12 +58,16 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post,
-                             on_delete=models.CASCADE,
-                             related_name='comments')
-    author = models.ForeignKey(Profile,
-                               on_delete=models.CASCADE,
-                               related_name='comments')
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    author = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
     text = models.TextField(max_length=280)
     date_commented = models.DateTimeField(default=timezone.now)
 

@@ -21,19 +21,23 @@ class PostCreateForm(forms.ModelForm):
                 'style': 'resize:none;',
                 #   'style': 'resize:none; background-color: #15181c; color: #d9d9d9;',
                 'placeholder': 'What\'s up?',
-            }))
+            }),
+    )
     location = forms.CharField(
         label='Where are you at?',
         required=False,
         max_length=40,
         widget=forms.TextInput(attrs={
             'placeholder': 'Helsinki, Finland',
-        }))
+        }),
+    )
     # To remove 'Currently photo' and 'Clear' field,
     # use this after required: widget=forms.FileInput
-    image = forms.ImageField(label='Got any photo?',
-                             required=False,
-                             widget=forms.FileInput)
+    image = forms.ImageField(
+        label='Got any photo?',
+        required=False,
+        widget=forms.FileInput,
+    )
 
     class Meta:
         model = Post
@@ -58,22 +62,27 @@ class PostUpdateForm(forms.ModelForm):
                 'style': 'resize:none;',
                 #   'style': 'resize:none; background-color: #15181c; color: #d9d9d9;',
                 'placeholder': 'Text of your post',
-            }))
+            }),
+    )
     location = forms.CharField(
         label='Edit location:',
         required=False,
         max_length=40,
         widget=forms.TextInput(attrs={
             'placeholder': 'Helsinki, Finland',
-        }))
+        }),
+    )
     # To remove 'Currently photo' and 'Clear' field,
     # use this after required: widget=forms.FileInput
-    image = forms.ImageField(label='Change current image for new one:',
-                             required=False,
-                             widget=forms.FileInput)
-
+    image = forms.ImageField(
+        label='Change current image for new one:',
+        required=False,
+        widget=forms.FileInput,
+    )
     delete_current_image = forms.BooleanField(
-        label='or only delete current (checkbox):', required=False)
+        label='or only delete current (checkbox):',
+        required=False,
+    )
 
     class Meta:
         model = Post
@@ -96,7 +105,8 @@ class CommentCreateForm(forms.ModelForm):
                 'style':
                 'resize:none; background-color: #000000; color: #d9d9d9;',
                 'placeholder': 'Leave your comment',
-            }))
+            }),
+    )
 
     class Meta:
         model = Comment
