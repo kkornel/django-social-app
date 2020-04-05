@@ -10,7 +10,7 @@ Todo:
   ✔ FOLLOWER response @done(20-04-04 18:51)
   ✔ tags and search @done(20-04-04 18:51)
   ✔ search front end @done(20-04-04 18:51)
-  ✔ porównac profile follow @done(20-04-04 18:51)
+  ✔ compare profile follow @done(20-04-04 18:51)
 
   ✔ add delete image for user @done(20-04-04 18:51)
   ✔ add delete image for post @done(20-04-04 18:51)
@@ -18,4 +18,4 @@ Todo:
   ✔ view titles @done(20-04-04 17:42)
   ✘ dont render checkbox if no image @cancelled(20-04-04 18:51) # To much to do. Render whole form manually etc. Now it's protected.
   ✔ check if image == none @done(20-04-04 18:51)
-  ☐ api
+  ✔ api @done(20-04-05 05:43)
