@@ -5,9 +5,15 @@ from rest_framework import serializers
 from social.api.serializers import (CommentSerializer, LikeSerializer,
                                     PostSerializer)
 from social.models import Like
-from users.models import Profile
+from users.models import Profile, User
 
 logger = logging.getLogger(__name__)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'date_joined']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -72,9 +78,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_posts(self, profile):
         posts = []
+        # for post in profile.posts.all():
+        #     serializer = PostSerializer(post)
+        #     posts.append(serializer.data)
         for post in profile.posts.all():
-            serializer = PostSerializer(post)
-            posts.append(serializer.data)
+            posts.append(post.pk)
         return posts
 
     def get_posts_count(self, profile):
@@ -82,9 +90,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_comments(self, profile):
         comments = []
+        # for comment in profile.comments.all():
+        #     serializer = CommentSerializer(comment)
+        #     comments.append(serializer.data)
         for comment in profile.comments.all():
-            serializer = CommentSerializer(comment)
-            comments.append(serializer.data)
+            comments.append(comment.pk)
         return comments
 
     def get_comments_count(self, profile):
@@ -92,9 +102,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_likes(self, profile):
         likes = []
+        # for like in Like.objects.filter(author=profile):
+        #     serializer = LikeSerializer(like)
+        #     likes.append(serializer.data)
         for like in Like.objects.filter(author=profile):
-            serializer = LikeSerializer(like)
-            likes.append(serializer.data)
+            likes.append(like.pk)
         return likes
 
     def get_likes_count(self, profile):

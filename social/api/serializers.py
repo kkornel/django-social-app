@@ -39,9 +39,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_likes(self, post):
         likes = []
+        """
+        If we want all info about like in response, including:
+        id, post_id, author, date_liked
+        """
+        # for like in Like.objects.filter(post=post):
+        #     serializer = LikeSerializer(like)
+        #     likes.append(serializer.data)
+        """
+        If we want only posts ids in response
+        """
         for like in Like.objects.filter(post=post):
-            serializer = LikeSerializer(like)
-            likes.append(serializer.data)
+            likes.append(like.pk)
         return likes
 
     def get_comments_count(self, post):
@@ -49,10 +58,20 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_comments(self, post):
         comments = []
+        """
+        If we want all info about comments in response, including:
+        id, post_id, author, text, date_commented
+        """
+        # for comment in post.comments.values():
+        #     comment = Comment.objects.get(pk=comment['id'])
+        #     serializer = CommentSerializer(comment)
+        #     comments.append(serializer.data)
+        """
+        If we want only comments ids in response
+        """
         for comment in post.comments.values():
             comment = Comment.objects.get(pk=comment['id'])
-            serializer = CommentSerializer(comment)
-            comments.append(serializer.data)
+            comments.append(comment.pk)
         return comments
 
 
