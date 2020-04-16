@@ -10,8 +10,8 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views import View, generic
-from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
-                                  ListView, UpdateView)
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, FormView, ListView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 
@@ -46,7 +46,7 @@ class PostListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostListView, self).get_context_data(**kwargs)
-        context['title'] = 'Django Master Thesis - Home'
+        context['title'] = 'Django app - Home'
         return context
 
 

@@ -1,8 +1,13 @@
 profile_imgs/
 fontawesome/
 .vscode/
-TODO
-
+.vscode
+vscode
+vscode/
+*.vscode
+*.vscode/
+*TODO
+*vscode
 # Django
 *.log
 *.pot
