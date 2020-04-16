@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "D:\\MasterThesis\\Django\\venv\\Scripts\\python.exe",
+    "python.pythonPath": "D:\\Dev\\Django\\venv\\Scripts\\python.exe",
     "python.formatting.provider": "yapf"
 }
