@@ -6,7 +6,7 @@ Social networking app providing the microblogging service.
 
 This application allows you to write short posts and easily share memorable photos. 
 <br>
-You can follow other people to be up to date with their life.
+You can also follow other people to be up to date with their life.
 
 Don't wait. Join now at:
 
