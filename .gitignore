@@ -1,5 +1,5 @@
 profile_imgs/
-fontawesome/
+# fontawesome/
 .vscode/*
 .vscode/settings.json
 !.vscode/settings.json
