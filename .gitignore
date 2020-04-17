@@ -1,5 +1,8 @@
 profile_imgs/
 fontawesome/
+.vscode/*
+.vscode/settings.json
+!.vscode/settings.json
 
 # Django
 *.log
