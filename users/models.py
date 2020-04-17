@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 
@@ -147,23 +148,54 @@ class Profile(models.Model):
         related_name='followers',
     )
 
-    def save(self, *args, **kwargs):
-        """
-        Resizing images on local storage.
-        Hardcoded output_size.
-        """
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     """
+    #     Resizing images on S3.
+    #     Hardcoded output_size.
+    #     """
+    #     super().save(*args, **kwargs)
 
-        if not self.image:
-            return
+    #     if not self.image:
+    #         return
 
-        img = Image.open(self.image.path)
+    #     img_read = storage.open(self.image.name, 'r')
+    #     img = Image.open(img_read)
 
-        if img.height > 510 or img.width > 515:
-            # TODO split in 2 mote ifs?
-            output_size = (510, 515)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
+    #     if img.height > 510 or img.width > 515:
+    #         extension = os.path.splitext(self.image.name)[1].lower()
+
+    #         if extension in ['.jpeg', '.jpg']:
+    #             format = 'JPEG'
+    #         if extension in ['.png']:
+    #             format = 'PNG'
+
+    #         output_size = (510, 515)
+    #         img.thumbnail(output_size)
+    #         in_mem_file = io.BytesIO()
+    #         img.save(in_mem_file, format=format)
+    #         img_write = storage.open(self.image.name, 'w+')
+    #         img_write.write(in_mem_file.getvalue())
+    #         img_write.close()
+
+    #     img_read.close()
+
+    # def save(self, *args, **kwargs):
+    #     """
+    #     Resizing images on local storage.
+    #     Hardcoded output_size.
+    #     """
+    #     super().save(*args, **kwargs)
+
+    #     if not self.image:
+    #         return
+
+    #     img = Image.open(self.image.path)
+
+    #     if img.height > 510 or img.width > 515:
+    #         # TODO split in 2 mote ifs?
+    #         output_size = (510, 515)
+    #         img.thumbnail(output_size)
+    #         img.save(self.image.path)
 
     def follow(self, user):
         if not self.is_following(user):

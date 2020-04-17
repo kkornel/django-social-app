@@ -254,15 +254,16 @@ class ProfileUpdateViewModal(UserPassesTestMixin, BSModalUpdateView):
 
         uploaded_new_image = image_from_form != image_from_profile
 
-        if delete_current_image and not uploaded_new_image:
-            form.instance.image.delete(save=False)
+        # TODO deleteing photo
+        # if delete_current_image and not uploaded_new_image:
+        #     form.instance.image.delete(save=False)
 
-        if uploaded_new_image:
-            # Update and delete
-            # I have to delete current image,
-            # but the image will be updated by saving form,
-            # so it is not on me to do.
-            profile.delete_image()
+        # if uploaded_new_image:
+        #     # Update and delete
+        #     # I have to delete current image,
+        #     # but the image will be updated by saving form,
+        #     # so it is not on me to do.
+        #     profile.delete_image()
 
         return super().form_valid(form)
 

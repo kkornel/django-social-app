@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'storages',
     # Local
     'users.apps.UsersConfig',
     'social.apps.SocialConfig',
@@ -234,3 +235,16 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
 }
+
+# AWS S3
+AWS_ACCESS_KEY_ID = 'AKIA3RY7ZE4JFX2YKAFE'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'django-social-files'
+# AWS S3
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_DJANGO_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_DJANGO_SECRET_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_DJANGO_STORAGE_BUCKET_NAME')
+
+AWS_3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

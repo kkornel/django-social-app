@@ -32,23 +32,24 @@ class Post(models.Model):
         related_name='likes',
     )
 
-    def save(self, *args, **kwargs):
-        """
-        Resizing images on local storage.
-        Hardcoded output_size.
-        """
-        super().save(*args, **kwargs)
+    # TODO save
+    # def save(self, *args, **kwargs):
+    #     """
+    #     Resizing images on local storage.
+    #     Hardcoded output_size.
+    #     """
+    #     super().save(*args, **kwargs)
 
-        if not self.image:
-            return
+    #     if not self.image:
+    #         return
 
-        img = Image.open(self.image.path)
+    #     img = Image.open(self.image.path)
 
-        if img.height > 510 or img.width > 515:
-            # TODO split in 2 mote ifs?
-            output_size = (510, 515)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
+    #     if img.height > 510 or img.width > 515:
+    #         # TODO split in 2 mote ifs?
+    #         output_size = (510, 515)
+    #         img.thumbnail(output_size)
+    #         img.save(self.image.path)
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})

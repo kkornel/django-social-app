@@ -10,8 +10,8 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views import View, generic
-from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView, ListView, UpdateView)
+from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
+                                  ListView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 
@@ -87,16 +87,17 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     # fields = ['content', 'location', 'image']
     template_name = 'social/post_update.html'
 
+    # TODO delete
     def form_valid(self, form):
         form.instance.author = self.request.user.profile
         delete_current_image = form.cleaned_data['delete_current_image']
         image = form.instance.image
-        if delete_current_image and not image:
-            logger.debug('Tried to delete image from post with no image.')
-        if delete_current_image and image:
-            logger.debug(f'Removing image: {image}...')
-            image.delete(save=False)
-            logger.debug(f'Image removed.')
+        # if delete_current_image and not image:
+        #     logger.debug('Tried to delete image from post with no image.')
+        # if delete_current_image and image:
+        #     logger.debug(f'Removing image: {image}...')
+        #     image.delete(save=False)
+        #     logger.debug(f'Image removed.')
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
