@@ -59,6 +59,7 @@ class UserManager(BaseUserManager):
             username=username,
         )
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         logger.debug('UserManager saved a new superuser.')
         return user
