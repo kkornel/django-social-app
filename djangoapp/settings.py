@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # >>> import secrets
 # >>> secrets.token_hex(24)
 # >>> NEW_KEY
-SECRET_KEY = os.environ.get('MT_DJANGO_APP_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SOCIAL_APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
