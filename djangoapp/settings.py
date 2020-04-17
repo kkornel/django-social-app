@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+import django_heroku
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -28,16 +30,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # >>> import secrets
 # >>> secrets.token_hex(24)
 # >>> NEW_KEY
-SECRET_KEY = os.environ.get('MT_DJANGO_APP_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SOCIAL_APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 DEBUG = (os.environ.get('DEBUG_VARIABLE') == 'True')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mydjangosocialapp.herokuapp.com']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -245,3 +246,5 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_DJANGO_STORAGE_BUCKET_NAME')
 AWS_3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+django_heroku.settings(locals())
