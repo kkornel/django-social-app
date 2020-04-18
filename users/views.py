@@ -41,7 +41,7 @@ def register(request):
             user = form.save()
             user.send_verification_email(request)
             # TODO remove later
-            user.is_active = True
+            # user.is_active = True
             user.save()
             messages.info(
                 request, f'A confirmation email has been sent to {user.email}')
