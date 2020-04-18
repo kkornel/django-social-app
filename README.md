@@ -13,7 +13,7 @@ Also:
 * Browse posts marked with specific hashtags.
 * Make use of created API.
 
-Don't wait. Join now at:
+### Don't wait. Join now at:
 
 https://mydjangosocialapp.herokuapp.com/
 
