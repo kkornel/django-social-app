@@ -15,6 +15,6 @@ Also:
 
 Don't wait. Join now at:
 
-...
+https://mydjangosocialapp.herokuapp.com/
 
 
