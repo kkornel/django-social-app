@@ -18,3 +18,8 @@ Also:
 https://mydjangosocialapp.herokuapp.com/
 
 
+Coming soon on pythonanywhere!
+
+
+### Pssst!
+If you are intrested, there is also a [Flask](https://github.com/kkornel/flask-social-app "Github page of Flask social app") version of this app. 
