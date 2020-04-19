@@ -19,7 +19,7 @@ Also:
 https://mydjangosocialapp.herokuapp.com/
 
 
-Coming soon on pythonanywhere!
+Coming soon on PythonAnywhere!
 
 
 ### Pssst!
