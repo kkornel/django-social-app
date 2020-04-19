@@ -13,8 +13,15 @@ Also:
 * Browse posts marked with specific hashtags.
 * Make use of created API.
 
-Don't wait. Join now at:
+### Pssst
+If you are intrested, there is also a [Flask](https://github.com/kkornel/flask-social-app "Github page of Flask social app") version of this app. 
+
+
+### Don't wait. Join now at:
 
 https://mydjangosocialapp.herokuapp.com/
+
+
+Coming soon on pythonanywhere!
 
 
