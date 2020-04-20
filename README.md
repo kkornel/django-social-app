@@ -23,3 +23,13 @@ Coming soon on PythonAnywhere!
 
 ### Pssst!
 If you are intrested, there is also a [Flask](https://github.com/kkornel/flask-social-app "Github page of Flask social app") version of this app. 
+
+
+### Things to do next:
+* API endpoints for UPDATE and DELETE
+* Unittests for API
+* Notification system
+* Message system
+* Trending feature
+* Who to follow - recommendations
+* Smuggle a little bit of REACT?
